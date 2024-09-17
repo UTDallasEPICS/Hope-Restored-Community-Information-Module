@@ -1,112 +1,65 @@
 const fs = require('fs');
+const pdf = require('pdf-parse');
 const path = require('path');
-const csv = require('csv-parser');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
-// Define paths
-const inputCsvPath = path.resolve(__dirname, '../data/output.csv'); // Path to your input CSV file
-const outputCsvPath = path.resolve(__dirname, '../data/restructured.csv'); // Path to the output CSV file
+// Use the path module to construct the full path
+let pdfPath = path.resolve(__dirname, '../../clientFiles/CollinCollege.pdf');
 
-// Ensure output directory exists
-const outputDir = path.dirname(outputCsvPath);
-if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-}
+// Function to parse the PDF and extract information
+async function extractAndConvertToCSV(pdfPath) {
+  try {
+    let dataBuffer = fs.readFileSync(pdfPath);
 
-// Define CSV writer for the output
-const csvWriter = createCsvWriter({
-    path: outputCsvPath,
-    header: [
-        { id: 'URL', title: 'url' },
-        { id: 'Organization', title: 'Organization' },
-        { id: 'Phone', title: 'Phone' },
-        { id: 'Address', title: 'Address' },
-        { id: 'Description', title: 'Description' }
-    ]
-});
+    // Extract the text from the PDF
+    let data = await pdf(dataBuffer);
+    let text = data.text;
 
-function isValidUrl(url) {
-    const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
-    return urlRegex.test(url);
-}
+    // Define arrays to store each category of information
+    let organizations = [];
+    let urls = [];
+    let descriptions = [];
+    let phoneNumbers = [];
+    let addresses = [];
 
-// Function to extract data from raw text
-function extractData(text) {
-    // Initialize variables
-    let organization = '';
-    let phone = '';
-    let address = '';
-    let description = '';
-    let url = '';
+    // Process the text to extract information
+    let lines = text.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i].trim();
 
-    // Split the text into lines
-    const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+      // Example of extracting organization name, URL, description, etc.
+      if (line.startsWith('www.')) {
+        // This line is the URL
+        urls.push(line);
+      } else if (line.match(/\d{3}-\d{3}-\d{4}/)) {
+        // This line is the phone number
+        phoneNumbers.push(line);
+      } else if (line.match(/\d{3} [A-Z][a-z]+ [A-Z][a-z]+/)) {
+        // This line is the address
+        addresses.push(line);
+      } else {
+        // Everything else can be considered part of the description
+        descriptions.push(line);
+      }
 
-    // Extract information based on patterns
-    for (let line of lines) {
-        // Extract phone number
-        if(isValidUrl(line.trim())){
-            url = line.trim();
-        }else if (/^\d{3}-\d{3}-\d{4}$/.test(line)) {
-            phone = line;
-        }
-        // Extract address (basic pattern)
-        else if (/^\d+\s/.test(line) && line.includes(',')) {
-            address = line;
-        }
-        // Extract organization name (typically first non-empty line)
-        else if (!organization) {
-            organization = line;
-        }
-        // Extract description (assume remaining lines form description)
-        else {
-            description += (description ? ' ' : '') + line;
-        }
+      // If there's a blank line, we assume we've finished one organization
+      if (line === '') {
+        organizations.push(lines[i - 1]); // Add the last non-blank line as the organization name
+      }
     }
 
-    return {
-        Organization: organization,
-        Phone: phone,
-        Address: address,
-        Description: description,
-        URL : url
-    };
+    // Convert the extracted data to CSV
+    let csvContent = 'Organization Name,URL,Description,Phone Number,Address\n';
+    for (let i = 0; i < organizations.length; i++) {
+      csvContent += `"${organizations[i]}","${urls[i]}","${descriptions[i]}","${phoneNumbers[i]}","${addresses[i]}"\n`;
+    }
+
+    // Write the CSV to a file
+    fs.writeFileSync('Community_Resources.csv', csvContent);
+    console.log('CSV file created: Community_Resources.csv');
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
 }
 
-// Function to process and restructure the data
-function processCsvData(rows) {
-    return rows.map(row => {
-        console.log('Original row:', row);
-
-        // Join all fields to form a single text block
-        const text = Object.values(row).join(' ');
-
-        // Extract and format data
-        const structuredData = extractData(text);
-
-        console.log('Structured data:', structuredData);
-        return structuredData;
-    });
-}
-
-// Read and process the CSV file
-const rows = [];
-fs.createReadStream(inputCsvPath)
-    .pipe(csv())
-    .on('data', (data) => {
-        console.log('Parsed row:', data); // Debugging line
-        rows.push(data);
-    })
-    .on('end', () => {
-        console.log('CSV parsing complete. Total rows:', rows.length);
-        const transformedData = processCsvData(rows);
-        console.log('Transformed data:', transformedData); // Debugging line
-
-        csvWriter.writeRecords(transformedData)
-            .then(() => {
-                console.log('Restructured CSV file written successfully');
-            })
-            .catch((err) => {
-                console.error('Error writing CSV file:', err);
-            });
-    });
+// Run the function
+extractAndConvertToCSV(pdfPath);
