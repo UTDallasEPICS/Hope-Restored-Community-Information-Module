@@ -65,6 +65,7 @@ function processText(text){
             }
 
             currentOrg = [lines[i - 1], lines[i], lines[i + 1], lines[i + 2]];
+            
         }
 
        // console.log(lines[i]);
