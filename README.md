@@ -12,11 +12,11 @@ nuxt-app/
 ├── static/                # Static files (e.g., images)
 ├── store/                 # Vuex store for state management
 ├── utils/                 # General utility functions
-│
 ├── server/                # Custom server code if applicable
 │   ├── api/               # Server-side API handling
 │   ├── db/                # Database models or utilities
-│   └── middleware/        # API middleware
+│   ├── middleware/        # API middleware
+│   ├── Authentication     # Login/Logout Register and user Authentication 
 │
 ├── nuxt.config.js         # Nuxt.js configuration file
 ├── package.json           # NPM dependencies and scripts
