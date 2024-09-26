@@ -12,7 +12,7 @@ nuxt-app/
 ├── static/                # Static files (e.g., images)
 ├── store/                 # Vuex store for state management
 ├── utils/                 # General utility functions
-│
+├── Routes/                # Login/Logout and Resgister
 ├── server/                # Custom server code if applicable
 │   ├── api/               # Server-side API handling
 │   ├── db/                # Database models or utilities
