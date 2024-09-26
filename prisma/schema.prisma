@@ -1,0 +1,20 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("postgresql://postgres:postgres@localhost:5005/postgres")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  username  String   @unique              // Unique username for login
+  password  String                        // Password field
+  name      String?                       // Optional name field (can be made required by removing `?`)
+  role      Role     @default(ADMIN)       // Role can be USER or ADMIN
+}
+
+enum Role {
+  ADMIN    // Admin user
+}
