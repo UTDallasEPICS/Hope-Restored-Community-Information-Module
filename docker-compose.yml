@@ -1,0 +1,48 @@
+name: HRM-resources
+services:
+  postgres:
+    container_name: container-pg
+    image: postgres
+    hostname: localhost
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - "HRM-postgres:/var/lib/postgresql/data"
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: container-pgadmin
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    ports:
+      - "5050:80"
+    volumes:
+      - "HRM-postgres:/var/lib/pgadmin"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    restart: unless-stopped
+
+  internal:
+    container_name: container-internal
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    ports:
+      - "3000:3000"
+      - "24678:24678"
+    depends_on:
+      - postgres
+    volumes:
+      - .:/src
+    restart: unless-stopped
+volumes:
+  HRM-postgres:
+# References:
+# https://medium.com/@jewelski/quickly-set-up-a-local-postgres-database-using-docker-5098052a4726
+# https://markus.oberlehner.net/blog/running-nuxt-3-in-a-docker-container/
