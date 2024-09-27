@@ -1,7 +1,6 @@
 {
   "name": "nuxt-app",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -10,7 +9,16 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "csv-parse": "^5.5.6",
+    "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
+    "@prisma/client": "^5.20.0",
     "nuxt": "^3.13.0",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.1",
     "vue": "latest"
+  },
+  "devDependencies": {
+    "prisma": "^5.20.0"
   }
 }

@@ -1,0 +1,105 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("postgresql://postgres:postgres@localhost:5005/postgres")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  username  String   @unique              // Unique username for login
+  password  String                        // Password field
+  name      String?                       // Optional name field (can be made required by removing `?`)
+  role      Role     @default(ADMIN)       // Role can be USER or ADMIN
+}
+
+model Language {
+  id Int              @id @default(autoincrement()) // Primary key with auto-increment
+  name String
+  resourceID Int @unique
+  resource Resources @relation(fields: [resourceID], references: [id])
+}
+
+model Resources {
+  id          Int      @id @default(autoincrement()) // Primary key with auto-increment
+  name        String
+  description String
+  eligibility Boolean  // Boolean should be capitalized
+  cost        Float    // Prisma uses `Float` for double precision numbers
+  locations Location[] // Backward relation to Location (One-to-many relationship)
+  Demo Demographic[] // Backward relation to Demographic (One-to-many relationship)
+  externalLink ExternalLinks?
+  phoneNumber PhoneNumber?
+  language Language?
+  tags Tags?
+  groups Groups?
+
+}
+
+model Tags {
+  id Int                @id @default(autoincrement()) // Primary key with auto-increment
+  name String
+  resourceId Int @unique
+  resource Resources @relation(fields: [resourceId], references: [id])
+}
+
+model Groups {
+  id Int              @id @default(autoincrement()) // Primary key with auto-increment
+  name String
+  resourceId Int @unique
+  resource Resources @relation(fields: [resourceId], references: [id])
+}
+
+model Demographic{
+  id Int                @id @default(autoincrement()) // Primary key with auto-increment
+  name String
+  resourceId Int
+  resource Resources @relation(fields: [resourceId], references: [id])
+}
+
+model ExternalLinks {
+  id Int                  @id @default(autoincrement()) // Primary key with auto-increment
+  name String
+  link String
+  resourceId Int @unique
+  resource   Resources  @relation(fields: [resourceId], references: [id])
+}
+
+model PhoneNumber {
+  id Int                    @id @default(autoincrement()) // Primary key with auto-increment
+  number Int
+  type String
+  resourceId Int @unique
+  resource Resources @relation(fields: [resourceId], references: [id])
+  personalId Int @unique
+  personal personal @relation(fields: [personalId], references: [id])
+}
+
+model personal {
+  id Int                @id @default(autoincrement()) // Primary key with auto-increment
+  name String
+  description String
+  phoneNumbers PhoneNumber[]
+}
+
+model Location {
+  id           Int       @id @default(autoincrement()) // Primary key
+  addressLine1 String
+  addressLine2 String
+  city         String
+  state        String
+  postalCode   String    // Changed from PostalLink Int to String for clarity
+  country      String
+  longitude    Float     // Changed from Int to Float
+  latitude     Float     // Changed from Int to Float
+  resourceId   Int       // Foreign key
+  resource     Resources @relation(fields: [resourceId], references: [id])
+
+  
+}
+
+enum Role {
+  ADMIN    // Admin user
+}
