@@ -16,7 +16,7 @@ nuxt-app/
 │   ├── api/               # Server-side API handling
 │   ├── db/                # Database models or utilities
 │   ├── middleware/        # API middleware
-│   ├── Authentication     # Login/Logout Register and user Authentication 
+│   
 │
 ├── nuxt.config.js         # Nuxt.js configuration file
 ├── package.json           # NPM dependencies and scripts
