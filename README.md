@@ -1,4 +1,6 @@
-# Folder Structures
+# Hope-Restored-Community-Information-Module
+
+## Folder Structures
 
 ```
 nuxt-app/
@@ -16,87 +18,39 @@ nuxt-app/
 │   ├── api/               # Server-side API handling
 │   ├── db/                # Database models or utilities
 │   ├── middleware/        # API middleware
-│   
 │
 ├── nuxt.config.js         # Nuxt.js configuration file
 ├── package.json           # NPM dependencies and scripts
 └── README.md              # Project documentation
 ```
 
-# Nuxt 3 Minimal Starter
+## Project setup
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
-
-## Setup
-
-Make sure to install the dependencies:
+1. Set up the environment variables in the .env file
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+# Replace the values in the .env file with the appropriate values
+cp .env.example .env
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+2. Run the following command to set up docker container
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+docker compose -f "docker-compose.yml" up -d --build
 ```
 
-## Production
+pgAdmin (Postgres Admin Web UI) will be available at `http://localhost:5050` with the credentials in .env file
 
-Build the application for production:
+You can access the app at `http://localhost:3000`
+
+3. Run the following command to set up prisma
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+npx prisma migrate dev
 ```
 
-Locally preview production build:
+Tip: You can use the Prisma Studio to view and edit the data in the database. Run the following command to start the Prisma Studio:
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+npx prisma studio
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-
-# Hope-Restored-Community-Information-Module
