@@ -2,6 +2,7 @@ name: HRM-resources
 services:
   postgres:
     container_name: container-pg
+    user: root # This is necessary to avoid permission issues with the mounted volumes.
     image: postgres
     hostname: localhost
     ports:
@@ -16,6 +17,7 @@ services:
 
   pgadmin:
     container_name: container-pgadmin
+    user: root
     image: dpage/pgadmin4
     depends_on:
       - postgres
