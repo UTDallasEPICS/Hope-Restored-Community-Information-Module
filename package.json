@@ -10,18 +10,12 @@
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
-    "csv-parse": "^5.5.6",
-    "csv-parser": "^3.0.0",
-    "csv-writer": "^1.6.0",
     "nuxt": "^3.13.0",
-    "pdf-lib": "^1.17.1",
-    "pdf-parse": "^1.1.1",
     "vue": "latest"
   },
   "devDependencies": {
-    "@nuxt/types": "^2.18.1",
-    "@nuxt/typescript-build": "^3.0.2",
-    "prisma": "^5.20.0",
-    "typescript": "^5.6.2"
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@sidebase/nuxt-auth": "^0.9.3",
+    "prisma": "^5.20.0"
   }
 }
