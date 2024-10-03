@@ -35,7 +35,6 @@ model Resources {
   language Language?
   tags Tags?
   groups Groups?
-
 }
 
 model Tags {

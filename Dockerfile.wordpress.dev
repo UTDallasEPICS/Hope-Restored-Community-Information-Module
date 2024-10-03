@@ -1,17 +1,14 @@
 ARG NODE_VERSION=20.11.0
-ARG PORT=3000
 
 FROM node:${NODE_VERSION}-slim AS base
 ENV NODE_ENV=development
 WORKDIR /src
 
 FROM base AS build
-COPY --link package*.json ./
+COPY --link package.json package-lock.json ./
 RUN npm install
 
 FROM base
-EXPOSE 3000
-EXPOSE 24678
 COPY --from=build /src/node_modules /src/node_modules
 CMD [ "npm", "run", "dev" ]
 

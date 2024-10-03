@@ -1,1 +1,7 @@
+.nuxt
+.output
+node_modules
+.gitignore
+README.md
+
 **/utils/client_files
