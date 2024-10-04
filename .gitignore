@@ -25,3 +25,5 @@ logs
 
 # Local files
 /private/
+
+.venv
