@@ -33,17 +33,19 @@ nuxt-app/
 cp .env.example .env
 ```
 
-2. Run the following command to set up docker container
+2. Install the dependencies
+
+```bash
+npm install
+```
+
+3. Run the following command to set up docker container
 
 ```bash
 docker compose -f "docker-compose.yml" up -d --build
 ```
 
-pgAdmin (Postgres Admin Web UI) will be available at `http://localhost:5050` with the credentials in .env file
-
-You can access the app at `http://localhost:3000`
-
-3. Run the following command to set up prisma
+4. Run the following command to set up prisma
 
 ```bash
 npx prisma migrate dev
@@ -53,4 +55,10 @@ Tip: You can use the Prisma Studio to view and edit the data in the database. Ru
 
 ```bash
 npx prisma studio
+```
+
+5. Run the following command to start the development server
+
+```bash
+npm run dev
 ```
