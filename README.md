@@ -1,4 +1,6 @@
-# Folder Structures
+# Hope-Restored-Community-Information-Module
+
+## Folder Structures
 
 ```
 nuxt-app/
@@ -16,87 +18,47 @@ nuxt-app/
 │   ├── api/               # Server-side API handling
 │   ├── db/                # Database models or utilities
 │   ├── middleware/        # API middleware
-│   
 │
 ├── nuxt.config.js         # Nuxt.js configuration file
 ├── package.json           # NPM dependencies and scripts
 └── README.md              # Project documentation
 ```
 
-# Nuxt 3 Minimal Starter
+## Project setup
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
-
-## Setup
-
-Make sure to install the dependencies:
+1. Set up the environment variables in the .env file
 
 ```bash
-# npm
+# Replace the values in the .env file with the appropriate values
+cp .env.example .env
+```
+
+2. Install the dependencies
+
+```bash
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+3. Run the following command to set up docker container
 
 ```bash
-# npm
+docker compose -f "docker-compose.yml" up -d --build
+```
+
+4. Run the following command to set up prisma
+
+```bash
+npx prisma migrate dev
+```
+
+Tip: You can use the Prisma Studio to view and edit the data in the database. Run the following command to start the Prisma Studio:
+
+```bash
+npx prisma studio
+```
+
+5. Run the following command to start the development server
+
+```bash
 npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-
-# Hope-Restored-Community-Information-Module
