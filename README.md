@@ -37,7 +37,7 @@ replace the databause
 2. Run the following command to set up docker container
 
 ```bash
-docker compose -f "docker-compose.yml" up -d --build
+docker-compose up --build
 ```
 
 pgAdmin (Postgres Admin Web UI) will be available at `http://localhost:5050` with the credentials in .env file
