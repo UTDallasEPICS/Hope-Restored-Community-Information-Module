@@ -31,6 +31,7 @@ nuxt-app/
 ```bash
 # Replace the values in the .env file with the appropriate values
 cp .env.example .env
+replace the databause
 ```
 
 2. Run the following command to set up docker container
@@ -47,6 +48,7 @@ You can access the app at `http://localhost:3000`
 
 ```bash
 npx prisma migrate dev
+npx prisma generate dev
 ```
 
 Tip: You can use the Prisma Studio to view and edit the data in the database. Run the following command to start the Prisma Studio:
