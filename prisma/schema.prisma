@@ -18,61 +18,55 @@ model User {
 model Language {
   id Int              @id @default(autoincrement()) // Primary key with auto-increment
   name String
-  resourceID Int @unique
-  resource Resources @relation(fields: [resourceID], references: [id])
+  resource Resource[]
 }
 
-model Resources {
+model Resource {
   id          Int      @id @default(autoincrement()) // Primary key with auto-increment
   name        String
   description String
-  eligibility Boolean  // Boolean should be capitalized
+  eligibility String  // this is the criteria for which a person can be elgible for this resource
   cost        Float    // Prisma uses `Float` for double precision numbers
   locations Location[] // Backward relation to Location (One-to-many relationship)
-  Demo Demographic[] // Backward relation to Demographic (One-to-many relationship)
-  externalLink ExternalLinks?
-  phoneNumber PhoneNumber?
-  language Language?
-  tags Tags?
-  groups Groups?
+  Demo Demographic[] 
+  externalLink String
+  phoneNumber PhoneNumber[]
+  language Language[]
+  //tags Tags[]
+  groupsId    Int // Foreign key to Groups
+  group      Group @relation(fields: [groupsId], references: [id])
 
 }
 
-model Tags {
-  id Int                @id @default(autoincrement()) // Primary key with auto-increment
-  name String
-  resourceId Int @unique
-  resource Resources @relation(fields: [resourceId], references: [id])
-}
+//model Tags {
+//  id Int                @id @default(autoincrement()) // Primary key with auto-increment
+//  name String
+//  resourceId Int @unique
+//  resource Resource[]
+//}
 
-model Groups {
+
+
+model Group {
   id Int              @id @default(autoincrement()) // Primary key with auto-increment
-  name String
-  resourceId Int @unique
-  resource Resources @relation(fields: [resourceId], references: [id])
+  name String         @unique
+  resource Resource[]
 }
 
 model Demographic{
   id Int                @id @default(autoincrement()) // Primary key with auto-increment
   name String
-  resourceId Int
-  resource Resources @relation(fields: [resourceId], references: [id])
+  resource Resource[]
 }
 
-model ExternalLinks {
-  id Int                  @id @default(autoincrement()) // Primary key with auto-increment
-  name String
-  link String
-  resourceId Int @unique
-  resource   Resources  @relation(fields: [resourceId], references: [id])
-}
+
 
 model PhoneNumber {
   id Int                    @id @default(autoincrement()) // Primary key with auto-increment
   number Int
   type String
-  resourceId Int @unique
-  resource Resources @relation(fields: [resourceId], references: [id])
+  resourceId Int
+  resource Resource @relation(fields: [resourceId], references: [id])
   personalId Int @unique
   personal personal @relation(fields: [personalId], references: [id])
 }
@@ -95,7 +89,7 @@ model Location {
   longitude    Float     // Changed from Int to Float
   latitude     Float     // Changed from Int to Float
   resourceId   Int       // Foreign key
-  resource     Resources @relation(fields: [resourceId], references: [id])
+  resource     Resource @relation(fields: [resourceId], references: [id])
 
   
 }
