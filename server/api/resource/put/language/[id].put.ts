@@ -3,14 +3,14 @@ import { defineEventHandler, readBody } from "h3";
 
 const prisma = new PrismaClient();
 
-type UpdateTagsBody = {
+type UpdateLanguageBody = {
   resourceId: number; // ID of the resource not the tags
-  tagName?: string; // Optional tag name, can be undefined
+  language?: string; // Optional tag name, can be undefined
 };
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody<UpdateTagsBody>(event);
-  const { resourceId, tagName } = body;
+  const body = await readBody<UpdateLanguageBody>(event);
+  const { resourceId, language } = body;
 
   if (!resourceId) {
     return { error: "Resource ID is required" };
@@ -18,10 +18,10 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Check if the resource exists
-    const resource = await prisma.resources.findUnique({
+    const resource = await prisma.resource.findUnique({
       where: { id: resourceId },
       select: {
-        tags: true
+        language: true
       }
     });
 
@@ -31,22 +31,23 @@ export default defineEventHandler(async (event) => {
     }
 
     // Check if the tag associated with the resource exists
-    if (!resource.tags || resource.tags.id < 0) {
+    if (!resource.language || resource.language.length === 0) {
       return { error: "No tags found for this resource" };
     }
-
+    const languageToUpdate = resource.language[0];
+    
     // Only update the tag if a new tagName is provided
-    if (tagName && tagName.trim() !== "") {
-      const updatedTag = await prisma.tags.update({
-        where: { id: resource.tags.id}, // Update using the unique ID of the tag
-        data: { name: tagName }, // Update the tag name
+    if (language !== "") {
+      const updatedTag = await prisma.language.update({
+        where: { id: languageToUpdate.id },
+        data: { name: language },
       });
-
-      return { success: true, message: "Tag updated successfully", updatedTag };
+    
+      return { success: true, message: "Language updated successfully", updatedTag };
     }
 
     // If no tagName provided, return a message that nothing was updated
-    return { message: "No tag name provided, nothing to update" };
+    return { message: "No language name provided, nothing to update" };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("Error updating tags:", errorMessage);
