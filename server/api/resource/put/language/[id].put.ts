@@ -4,8 +4,8 @@ import { defineEventHandler, readBody } from "h3";
 const prisma = new PrismaClient();
 
 type UpdateLanguageBody = {
-  resourceId: number; // ID of the resource not the tags
-  language?: string; // Optional tag name, can be undefined
+  resourceId: number;
+  language: { name: string }[]; // Array of language objects with `name`
 };
 
 export default defineEventHandler(async (event) => {
@@ -21,36 +21,51 @@ export default defineEventHandler(async (event) => {
     const resource = await prisma.resource.findUnique({
       where: { id: resourceId },
       select: {
-        language: true
-      }
+        language: true,
+      },
     });
-
 
     if (!resource) {
       return { error: "Resource not found" };
     }
 
-    // Check if the tag associated with the resource exists
+    // Check if there are any existing languages for this resource
     if (!resource.language || resource.language.length === 0) {
-      return { error: "No tags found for this resource" };
-    }
-    const languageToUpdate = resource.language[0];
-    
-    // Only update the tag if a new tagName is provided
-    if (language !== "") {
-      const updatedTag = await prisma.language.update({
-        where: { id: languageToUpdate.id },
-        data: { name: language },
-      });
-    
-      return { success: true, message: "Language updated successfully", updatedTag };
+      return { error: "No language found for this resource" };
     }
 
-    // If no tagName provided, return a message that nothing was updated
-    return { message: "No language name provided, nothing to update" };
+    // Iterate over the languages array in the body and update the language records
+    const updatedLanguages = await Promise.all(
+      language.map(async (lang, index) => {
+        // If language exists at index, update it
+        const existingLanguage = resource.language[index];
+
+        if (existingLanguage) {
+          return await prisma.language.update({
+            where: { id: existingLanguage.id },
+            data: { name: lang.name },
+          });
+        } else {
+          return await prisma.language.create({
+            data: {
+              name: lang.name, // Correctly handle the language name
+              resource: {
+                connect: { id: resourceId }, // Connect to the correct resource
+              },
+            },
+          });
+        }
+      })
+    );
+
+    return {
+      success: true,
+      message: "Languages updated successfully",
+      updatedLanguages,
+    };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("Error updating tags:", errorMessage);
-    return { error: "Failed to update tag" };
+    console.error("Error updating languages:", errorMessage);
+    return { error: "Failed to update languages" };
   }
 });
