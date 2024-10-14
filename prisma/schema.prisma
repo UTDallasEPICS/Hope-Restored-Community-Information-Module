@@ -63,7 +63,7 @@ model Demographic{
 
 model PhoneNumber {
   id Int                    @id @default(autoincrement()) // Primary key with auto-increment
-  number Int
+  number String
   type String
   resourceId Int
   resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)

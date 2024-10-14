@@ -13,18 +13,18 @@ interface CreateResourceBody {
   cost?: number;
   externalLink?: string;
   // Personal entity with multiple phone numbers
-  
+
   personal?: {
     name: string;
     description: string;
     phoneNumbers: {
-      number: number;
+      number: string;
       type: string;
     }[];
   };
   // Direct phone number attached to the resource
   phoneNumber?: {
-    number: number;
+    number: string;
     type: string;
   };
   language?: {
@@ -49,7 +49,7 @@ interface CreateResourceBody {
 
 export default defineEventHandler(async (event: any) => {
   const body = await readBody<CreateResourceBody>(event);
-  const { name, description, group} = body;
+  const { name, description, group } = body;
 
   if (!name || !description || !group) {
     return { error: "Name, description, and groupId are required fields" };
@@ -75,19 +75,13 @@ export default defineEventHandler(async (event: any) => {
               create: {
                 number: body.phoneNumber.number,
                 type: body.phoneNumber.type,
-                personal: body.personal
-                  ? {
-                      create: {
-                        name: body.personal.name,
-                        description: body.personal.description,
-                      },
-                    }
-                  : {
-                      create: {
-                        name: "Unknown", // Or any fallback value
-                        description: "No description provided",
-                      },
-                    },
+                // Create the associated personal entity
+                personal: {
+                  create: {
+                    name: body.personal?.name || "N/A",
+                    description: body.personal?.description || "No description",
+                  },
+                },
               },
             }
           : undefined,
