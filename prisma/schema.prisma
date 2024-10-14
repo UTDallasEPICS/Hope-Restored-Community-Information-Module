@@ -29,12 +29,12 @@ model Resource {
   cost        Float    // Prisma uses `Float` for double precision numbers
   locations Location[] // Backward relation to Location (One-to-many relationship)
   Demo Demographic[] 
-  externalLink ExternalLinks[]
+  externalLink ExternalLink[]
   phoneNumber PhoneNumber[]
   language Language[]
   //tags Tags[]
   groupsId    Int // Foreign key to Groups
-  group      Groups @relation(fields: [groupsId], references: [id])
+  group      Group @relation(fields: [groupsId], references: [id])
 
 }
 
@@ -47,7 +47,7 @@ model Resource {
 
 
 
-model Groups {
+model Group {
   id Int              @id @default(autoincrement()) // Primary key with auto-increment
   name String
   resource Resource[]
@@ -59,7 +59,7 @@ model Demographic{
   resource Resource[]
 }
 
-model ExternalLinks {
+model ExternalLink {
   id Int                  @id @default(autoincrement()) // Primary key with auto-increment
   name String
   link String
@@ -74,10 +74,10 @@ model PhoneNumber {
   resourceId Int
   resource Resource @relation(fields: [resourceId], references: [id])
   personalId Int @unique
-  personal personal @relation(fields: [personalId], references: [id])
+  personal Personal @relation(fields: [personalId], references: [id])
 }
 
-model personal {
+model Personal {
   id Int                @id @default(autoincrement()) // Primary key with auto-increment
   name String
   description String
