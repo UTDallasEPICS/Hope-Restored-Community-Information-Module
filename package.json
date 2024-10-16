@@ -4,13 +4,14 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "build-vue": "vue-cli-service build --dest vue-dist --target lib ./components/wordpress/Wordpress.vue",
-    "dev-vue": "vue-cli-service serve --port 4000 ./components/wordpress/main.js",
+    "build-vue": "vite build --config vite.config.wordpress.ts",
+    "dev-vue": "vite --config vite.config.wordpress.ts ",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.23",
     "@prisma/client": "^5.20.0",
     "nuxt": "^3.13.0",
     "vue": "latest"
@@ -18,9 +19,11 @@
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@sidebase/nuxt-auth": "^0.6.7",
-    "@vue/cli-service": "^5.0.8",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
     "prisma": "^5.20.0",
-    "typescript": "^5.6.2",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.3",
     "vue-tsc": "^2.1.6"
   }
 }

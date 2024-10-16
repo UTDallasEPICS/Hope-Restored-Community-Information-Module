@@ -1,12 +1,19 @@
+<script lang="ts" setup>
+import CardDeck from "~/components/Card/CardDeck.vue";
+import NavBar from "~/components/NavBar.vue";
+</script>
+
 <template>
   <div>
-    <h1>Hello from Vue in WordPress!</h1>
+    <h1 class="text-3xl font-bold underline">Hello from Vue in WordPress!</h1>
     <button @click="fetchData">Fetch Data from Nuxt Backend</button>
     <p v-if="data">Received: {{ data }}</p>
+    <CardDeck />
+    <NavBar />
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   data() {
     return {
@@ -16,7 +23,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await fetch("http://localhost:3000/api/resource");
+        const response = await fetch("http://localhost:4000/api/resource");
         this.data = await response.json();
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -25,20 +32,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-h1 {
-  color: #42b983;
-}
-button {
-  background-color: #42b983;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin-top: 20px;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #2c7a68;
-}
-</style>
