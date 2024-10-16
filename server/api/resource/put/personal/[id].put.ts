@@ -26,8 +26,6 @@ export default defineEventHandler(async(event) => {
 
         if(!personal)
             return {error: "Personal not found"};
-        console.log(name);
-        console.log(description)
         const UpdatedPersonal = await prisma.personal.update({
             where: {id: personalId},
             data: {
