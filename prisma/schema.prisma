@@ -30,8 +30,8 @@ model Resource {
   locations Location[] // Backward relation to Location (One-to-many relationship)
   Demo Demographic[] 
   externalLink String
-  phoneNumber PhoneNumber[]
-  language Language[]
+  phoneNumbers PhoneNumber[]
+  languages Language[]
   //tags Tags[]
   groupsId    Int // Foreign key to Groups
   group      Group @relation(fields: [groupsId], references: [id])
@@ -67,8 +67,8 @@ model PhoneNumber {
   type String
   resourceId Int
   resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-  personalId Int @unique
-  personal personal @relation(fields: [personalId], references: [id])
+  personalId Int?
+  personal personal? @relation(fields: [personalId], references: [id])
 }
 
 model personal {

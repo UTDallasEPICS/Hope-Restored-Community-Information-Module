@@ -8,17 +8,22 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "prisma": {
+		"seed": "tsx prisma/seed.ts"
+	},
   "dependencies": {
     "@prisma/client": "^5.20.0",
     "nuxt": "^3.13.0",
     "vue": "latest"
   },
-  "devDependencies": { 
+  "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@sidebase/nuxt-auth": "^0.6.7",
+    "@types/node": "^22.7.5",
     "prisma": "^5.20.0",
-    "typescript": "^5.6.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3",
     "vue-tsc": "^2.1.6"
-
   }
 }

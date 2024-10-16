@@ -10,25 +10,24 @@ type UpdatePhoneNumberAttributes = {
     type: string;
   }[];
   personalId: number;
-  personal: string;
 };
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<UpdatePhoneNumberAttributes>(event);
-  const { resourceId, phoneNumbers, personalId, personal } = body;
+  const { resourceId, phoneNumbers, personalId} = body;
 
   if (!resourceId) {
     return { error: "Resource ID is required" };
   }
 
-  if (!personalId) {
-    return { error: "personal ID is required" };
-  }
+  // if (!personalId) {
+  //   return { error: "personal ID is required" };
+  // }
 
   try {
     const resource = await prisma.resource.findUnique({
       where: { id: resourceId },
-      include: { phoneNumber: true },
+      include: { phoneNumbers: true },
     });
 
     if (!resource) {
@@ -38,26 +37,30 @@ export default defineEventHandler(async (event) => {
     const updatedPhoneNumbers = await Promise.all(
       phoneNumbers.map(async (phoneNumber, index) => {
         // Check if there's an existing phone number for the resource
-        const existingPhoneNumber = resource.phoneNumber[index];
-    
-        return await prisma.phoneNumber.upsert({
-          where: {
-            id: existingPhoneNumber.id, // Use a placeholder ID for non-existing phone numbers
-          },
-          update: {
-            ...phoneNumber, // Update existing phone number fields
-          },
-          create: {
-            number: phoneNumber.number,
-            type: phoneNumber.type,
-            resource: { connect: { id: resourceId } },
-            personal: { connect: { id: personalId } }, // Ensure this is valid based on your schema
-          },
-        });
+        const existingPhoneNumber = resource.phoneNumbers[index];
+
+        if (existingPhoneNumber) {
+          return await prisma.phoneNumber.update({
+            where: {
+              id: existingPhoneNumber.id,
+            },
+            data: {
+              number: phoneNumber.number,
+              type: phoneNumber.type,
+            },
+          });
+        } else {
+          return await prisma.phoneNumber.create({
+            data: {
+              number: phoneNumber.number,
+              type: phoneNumber.type,
+              resourceId: resourceId,
+              personalId: personalId,
+            },
+          });
+        }
       })
     );
-    
-      
 
     return { success: true, updatedPhoneNumbers };
   } catch (error) {

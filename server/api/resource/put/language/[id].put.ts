@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     const resource = await prisma.resource.findUnique({
       where: { id: resourceId },
       select: {
-        language: true,
+        languages: true,
       },
     });
 
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Check if there are any existing languages for this resource
-    if (!resource.language || resource.language.length === 0) {
+    if (!resource.languages || resource.languages.length === 0) {
       return { error: "No language found for this resource" };
     }
 
@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
     const updatedLanguages = await Promise.all(
       language.map(async (lang, index) => {
         // If language exists at index, update it
-        const existingLanguage = resource.language[index];
+        const existingLanguage = resource.languages[index];
 
         if (existingLanguage) {
           return await prisma.language.update({

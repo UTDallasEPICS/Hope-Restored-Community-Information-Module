@@ -70,7 +70,7 @@ export default defineEventHandler(async (event: any) => {
         cost: body.cost ?? 0,
         externalLink: body.externalLink ?? "",
         // Handle personal and phoneNumbers creation logic
-        phoneNumber: body.phoneNumber
+        phoneNumbers: body.phoneNumber
           ? {
               create: {
                 number: body.phoneNumber.number,
@@ -86,7 +86,7 @@ export default defineEventHandler(async (event: any) => {
             }
           : undefined,
 
-        language: Array.isArray(body.language)
+        languages: Array.isArray(body.language)
           ? {
               create: body.language.map((lang) => ({
                 name: lang.name,
