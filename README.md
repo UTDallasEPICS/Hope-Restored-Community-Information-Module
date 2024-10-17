@@ -60,5 +60,8 @@ npx prisma studio
 5. Run the following command to start the development server
 
 ```bash
+# Serve with hot reload at localhost:3000 for the admin frontend
 npm run dev
+# Serve with hot reload at localhost:4000 for the user frontend
+npm run dev-vue
 ```
