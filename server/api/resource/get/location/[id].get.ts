@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   if (!id) {
     return { error: "Location ID is required" };
   }
-
+ 
   try {
     // Find the location by its ID, selecting all relevant fields and associated resource
     const location = await prisma.location.findUnique({
