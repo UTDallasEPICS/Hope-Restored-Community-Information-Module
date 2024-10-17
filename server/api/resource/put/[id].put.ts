@@ -25,7 +25,7 @@ export default defineEventHandler(async(event) => {
         const resource = await prisma.resource.findUnique({
             where: { id: resourceId },
             select: {
-              language: true,
+              languages: true,
             },
           });
 

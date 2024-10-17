@@ -1,13 +1,11 @@
-This API allows users to update or create demographics for a specific 
-resource. It ensures the resource exists and handles cases where 
-there are no demographics to update. Each demographic is either 
-updated or created based on the existing data in the database.
+# This is for the post request API
+After deconstruction the name, group and description from the event. it checks if there are there and returns an error. Everything else is optional
+# For the prisma.resource.create
+for group(prisma docs) in short if there is already a group created prior it simply connects this resource to the created groups, if there is not group it creates a new one.
+# For phone Number
+Personal is only connected to phone Number not resource, so it creates the phone Numbers and personal if there is any passed through, other it defaults to "N/A" and "no description"
 
 
-type UpdateDemographics = {
-  resourceId: number;
-  demographic: { name: string }[];
-};
 
 # This is for the put API's
 
@@ -58,7 +56,9 @@ Since personal is not attached to the resource directly but to phone numbers, yo
 
 # Update phonenumbers API
 
-This API can edit either the phone numbers tied to a resource or the phonenumbers that has a personal relation(if a personal Id is passed)
+This API can edit the Phone Numbers tied to a resource if no personalId was passed, but if it is passed it instead edits the phonenumbers inside personal.
+Same as demo and location API's, it maps through the phone Numbers and updates it either in the resource or personal, if personal Id is passed or not
+
 
 
 

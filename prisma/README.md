@@ -1,4 +1,4 @@
-to run the seed. ts file
+# to run the seed. ts file
 
 npm install tsx --save-dev
 
