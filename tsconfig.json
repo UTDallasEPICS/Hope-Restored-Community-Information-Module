@@ -1,5 +1,7 @@
 {
+  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
+    "types": ["node"],
     "target": "es6",
     "lib": [
       "dom",
@@ -18,8 +20,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "importHelpers": true,
-    "jsx": "preserve",
-    // "baseUrl": "src"
+    "jsx": "preserve"
+    // "baseUrl": "src" // Move this to another place if needed
   },
   "include": [
     "next-env.d.ts",
@@ -28,11 +30,5 @@
   ],
   "exclude": [
     "node_modules"
-  ],
-}
-{
-  "extends": "./.nuxt/tsconfig.json",
-  "compilerOptions": {
-    "types": ["node"]
-  }
+  ]
 }
