@@ -5,10 +5,10 @@ import NavBar from "~/components/NavBar.vue";
 
 <template>
   <div>
-    <h1 class="text-3xl font-bold underline">Hello from Vue in WordPress!</h1>
+    <!-- <h1 class="font-bold underline">Hello from Vue in WordPress!</h1>
     <button @click="fetchData">Fetch Data from Nuxt Backend</button>
     <p v-if="data">Received: {{ data }}</p>
-    <CardDeck />
+    <CardDeck /> -->
     <NavBar />
   </div>
 </template>

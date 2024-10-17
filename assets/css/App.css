@@ -2,3 +2,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    @apply font-Roboto;
+  }
+  h2 {
+    @apply text-4xl font-bold;
+  }
+  p {
+    @apply text-base;
+  }
+}
