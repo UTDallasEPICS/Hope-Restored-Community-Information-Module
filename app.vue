@@ -4,5 +4,6 @@
     This is our App
   </div>
   <NuxtPage />
+  <ResourceEdit/>
   <ResourceCard/>
 </template>
