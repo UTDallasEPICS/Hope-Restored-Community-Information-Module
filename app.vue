@@ -1,9 +1,10 @@
 <template>
-  <div>
+  <div class="font-bold">
     <NuxtRouteAnnouncer />
-    <AppHeader/>
     <AppFooter/>
   </div>
   <NuxtPage />
+  <ResourceEdit/>
+  <ResourceCard/>
 </template>
 
