@@ -16,7 +16,7 @@ export default defineEventHandler(async(event) => {
 
     if(!personalId)
         return {error: "Personal Id is required"};
-    if(!name && !description)
+    if(!name || !description)
         return {error: "Description or Name is required"}
     
     try {
