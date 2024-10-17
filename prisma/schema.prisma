@@ -19,12 +19,15 @@ model Language {
   id Int              @id @default(autoincrement()) // Primary key with auto-increment
   name String
   resource Resource[]
+  resource Resource[]
 }
 
+model Resource {
 model Resource {
   id          Int      @id @default(autoincrement()) // Primary key with auto-increment
   name        String
   description String
+  eligibility String  // this is the criteria for which a person can be elgible for this resource
   eligibility String  // this is the criteria for which a person can be elgible for this resource
   cost        Float    // Prisma uses `Float` for double precision numbers
   locations Location[] // Backward relation to Location (One-to-many relationship)
@@ -57,6 +60,7 @@ model Demographic{
   id Int                @id @default(autoincrement()) // Primary key with auto-increment
   name String
   resource Resource[]
+  resource Resource[]
 }
 
 
@@ -71,7 +75,7 @@ model PhoneNumber {
   personal personal? @relation(fields: [personalId], references: [id])
 }
 
-model personal {
+model Personal {
   id Int                @id @default(autoincrement()) // Primary key with auto-increment
   name String
   description String
