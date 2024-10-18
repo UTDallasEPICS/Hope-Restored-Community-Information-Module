@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import CardDeck from "~/components/Card/CardDeck.vue";
+import ResourceDeck from "~/components/Card/ResourceDeck.vue";
 import NavBar from "~/components/NavBar.vue";
 </script>
 
@@ -7,9 +7,9 @@ import NavBar from "~/components/NavBar.vue";
   <div>
     <!-- <h1 class="font-bold underline">Hello from Vue in WordPress!</h1>
     <button @click="fetchData">Fetch Data from Nuxt Backend</button>
-    <p v-if="data">Received: {{ data }}</p>
-    <CardDeck /> -->
+    <p v-if="data">Received: {{ data }}</p> -->
     <NavBar />
+    <ResourceDeck />
   </div>
 </template>
 
