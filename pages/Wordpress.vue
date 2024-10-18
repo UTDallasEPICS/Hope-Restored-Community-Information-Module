@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import ResourceDeck from "~/components/Card/ResourceDeck.vue";
-import NavBar from "~/components/NavBar.vue";
+import ResourceDeck from "~/components/Resource/ResourceDeck.vue";
+import NavBar from "~/components/PublicNavBar.vue";
 </script>
 
 <template>
