@@ -56,7 +56,7 @@ export default defineEventHandler(async (event: any) => {
   }
 
   try {
-    const resource = await prisma.resource.create({
+    const resource = await prisma.resources.create({
       data: {
         name,
         description,
@@ -68,7 +68,7 @@ export default defineEventHandler(async (event: any) => {
         },
         eligibility: body.eligibility ?? "",
         cost: body.cost ?? 0,
-        externalLink: body.externalLink ?? "",
+        ExternalLinks: body.externalLink ?? "",
         // Handle personal and phoneNumbers creation logic
         phoneNumbers: body.phoneNumber
           ? {
