@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-const { fontFamily } = require('tailwindcss/defaultTheme')
+const { fontFamily } = require("tailwindcss/defaultTheme");
 export default {
+  mode: "jit",
   content: [
     "./components/**/*.{js,vue,ts}",
     "./layouts/**/*.vue",
@@ -25,7 +26,7 @@ export default {
         "white-neutral": "#F7F7F7",
       },
       fontFamily: {
-        Roboto: ["Roboto", "sans-serif", ...fontFamily.sans,],
+        Roboto: ["Roboto", "sans-serif", ...fontFamily.sans],
       },
     },
   },
