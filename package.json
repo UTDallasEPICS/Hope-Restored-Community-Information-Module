@@ -10,6 +10,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "prisma": {
+		"seed": "tsx prisma/seed.ts"
+	},
   "dependencies": {
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.1.5",
@@ -22,7 +25,10 @@
     "@sidebase/nuxt-auth": "^0.6.7",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
+    "@types/node": "^22.7.5",
     "prisma": "^5.20.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.1",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.6.3",
     "vue-tsc": "^2.1.6"
