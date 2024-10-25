@@ -1,29 +1,35 @@
-<!-- ResourceInfo.vue -->
+<script lang="ts" setup>
+import { defineProps } from "vue";
+import { TagIcon, UserGroupIcon } from "@heroicons/vue/24/solid";
+import ResourceTag from "./ResourceTag.vue";
+export interface ResourceInfoProps {
+  title: string;
+  description: string;
+  services: string[];
+  demographics: string[];
+}
+defineProps<ResourceInfoProps>();
+</script>
+
 <template>
-    <div class="resource-info">
-      <p><strong>Services:</strong> {{ services }}</p>
-      <p><strong>Demographics:</strong> {{ demographics }}</p>
+  <div class="flex flex-auto flex-row justify-start">
+    <div class="flex flex-auto flex-col">
+      <h2>{{ title }}</h2>
+      <p>{{ description }}</p>
+      <div class="flex flex-auto flex-col justify-start">
+        <ResourceTag
+          category="Services"
+          :icon="TagIcon"
+          :tags="services"
+          :onTagClicked="() => {}"
+        />
+        <ResourceTag
+          category="Demographics"
+          :icon="UserGroupIcon"
+          :tags="demographics"
+          :onTagClicked="() => {}"
+        />
+      </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      services: {
-        type: String,
-        required: true,
-      },
-      demographics: {
-        type: String,
-        required: true,
-      },
-    },
-  };
-  </script>
-  
-  <style scoped>
-  .resource-info {
-    color: #4caf50; /* Example color */
-  }
-  </style>
-  
+  </div>
+</template>
