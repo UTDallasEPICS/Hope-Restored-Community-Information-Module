@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import CardDeck from "~/components/Card/CardDeck.vue";
-import NavBar from "~/components/NavBar.vue";
+import CardDeck from "../components/Card/CardDeck.vue";
+import NavBar from "../components/NavBar.vue";
 </script>
 
 <template>
