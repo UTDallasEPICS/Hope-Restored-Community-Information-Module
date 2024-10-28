@@ -48,24 +48,7 @@ defineProps<ResourceProps>();
     <div class="flex w-2 bg-black-neutral my-2 rounded"></div>
     <div class="flex flex-initial flex-col justify-between px-4">
       <div class="flex flex-col gap-y-4 justify-start pb-4">
-        <ResourceNextStep
-          v-if="phoneNumbers.length > 0"
-          :icon="PhoneIcon"
-          flavorText="Call a number"
-          :items="phoneNumbers"
-        />
-        <ResourceNextStep
-          v-if="emails.length > 0"
-          :icon="EnvelopeIcon"
-          flavorText="Send an email"
-          :items="emails"
-        />
-        <ResourceNextStep
-          v-if="addresses.length > 0"
-          :icon="MapPinIcon"
-          flavorText="Go to an address"
-          :items="addresses"
-        />
+        
       </div>
       <button
         class="flex flex-row items-center gap-x-4 initial bg-hrm-dark-green hover:bg-hrm-green text-white-neutral font-semibold py-2 px-4 border border-gray-400 rounded shadow"
