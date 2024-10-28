@@ -7,19 +7,21 @@ const resourceId = 3; // Set this dynamically if needed
 
 // Fetch the resource data
 const { data: resource, error, refresh } = await useFetch(`/api/resource/get/${resourceId}`);
-
 // Function to save the updated resource
 const saveChanges = async () => {
   if (resource.value) {
     try {
-      const response = await fetch(`http://localhost:3000/api/resource/put/${resourceId}`, {
+      const response = await fetch(`api/resource/put/${resourceId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          resourceId: 3,
           name: resource.value.name,
           description: resource.value.description,
+          group: resource.value.group.name
+          
         }),
       });
 
@@ -63,6 +65,13 @@ const saveChanges = async () => {
     <div v-if="editMode" class="mt-2">
       <input v-model="resource.name" type="text" placeholder="Edit Name" />
       <input v-model="resource.description" type="text" placeholder="Edit Description" />
+      <input v-model="resource.group.name" type="text" placeholder="Edit group" />
+    </div>
+    <div v-else-if="!editMode" className="border border-black">
+      <p>{{ resource.name }}</p>
+      <p>{{ resource.description }}</p>
+      <p v-if="!resource.group">error group</p>
+      <p v-else>{{ resource.group.name }}</p>
     </div>
   </div>
 </template>

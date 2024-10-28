@@ -1,5 +1,5 @@
 <template>
-  <div class="resource-card">
+  <div class="resource-card" className="border border-black">
     <h2>Create Resource</h2>
     <form @submit.prevent="submitForm">
       <div>
