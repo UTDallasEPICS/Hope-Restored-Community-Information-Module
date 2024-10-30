@@ -2,6 +2,7 @@
 import ResourceDeck from "~/components/Resource/ResourceDeck.vue";
 import NavBar from "~/components/PublicNavBar.vue";
 import FilterDeck from "~/components/Filter/FilterDeck.vue";
+import { type Resource } from "~/components/Resource/api";
 </script>
 
 <template>

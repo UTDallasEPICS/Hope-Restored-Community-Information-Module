@@ -7,12 +7,8 @@ nuxt-app/
 │
 ├── assets/                # Uncompiled assets like Sass, images, fonts
 ├── components/            # Vue.js components
-├── layouts/               # Layouts for the app
-├── middleware/            # Custom middlewares
 ├── pages/                 # Pages (Vue components)
-├── plugins/               # Nuxt plugins
 ├── static/                # Static files (e.g., images)
-├── store/                 # Vuex store for state management
 ├── utils/                 # General utility functions
 ├── server/                # Custom server code if applicable
 │   ├── api/               # Server-side API handling
