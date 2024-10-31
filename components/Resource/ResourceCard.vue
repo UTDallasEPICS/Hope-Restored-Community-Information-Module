@@ -20,7 +20,10 @@ export interface ResourceProps {
   emails: string[];
   addresses: string[];
 }
-defineProps<ResourceProps>();
+const props = defineProps<ResourceProps>();
+const phoneNumbers = props.phoneNumbers || []; // Fallback to empty array
+const emails = props.emails || [];
+const addresses = props.addresses || [];
 </script>
 
 <template>

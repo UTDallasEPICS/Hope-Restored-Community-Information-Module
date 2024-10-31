@@ -18,7 +18,12 @@ export default defineEventHandler(async (event) => {
         Demo: true,
         languages: true,
         locations: true,
-        phoneNumbers: true,
+        phoneNumbers: {
+          include: {
+            personal: true
+          }
+        }
+        
       },
     });
 
