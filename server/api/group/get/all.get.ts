@@ -7,7 +7,6 @@ export default defineEventHandler(async (event) => {
   try {
     // Find all the group in the database
     const groups = await prisma.group.findMany();
-    console.log(groups);
     return groups;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);

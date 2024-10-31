@@ -1,12 +1,19 @@
 <script lang="ts" setup>
 import { defineProps } from "vue";
-import { TagIcon, UserGroupIcon } from "@heroicons/vue/24/solid";
+import {
+  LanguageIcon,
+  UserGroupIcon,
+  CheckIcon,
+  CurrencyDollarIcon,
+} from "@heroicons/vue/24/solid";
 import ResourceTag from "./ResourceTag.vue";
 export interface ResourceInfoProps {
   title: string;
   description: string;
-  services: string[];
+  languages: string[];
   demographics: string[];
+  eligibility: string;
+  cost: string;
 }
 defineProps<ResourceInfoProps>();
 </script>
@@ -18,15 +25,27 @@ defineProps<ResourceInfoProps>();
       <p>{{ description }}</p>
       <div class="flex flex-auto flex-col justify-start">
         <ResourceTag
-          category="Services"
-          :icon="TagIcon"
-          :tags="services"
+          category="Languages"
+          :icon="LanguageIcon"
+          :tags="languages"
           :onTagClicked="() => {}"
         />
         <ResourceTag
           category="Demographics"
           :icon="UserGroupIcon"
           :tags="demographics"
+          :onTagClicked="() => {}"
+        />
+        <ResourceTag
+          category="Elligibility"
+          :icon="CheckIcon"
+          :tags="[eligibility]"
+          :onTagClicked="() => {}"
+        />
+        <ResourceTag
+          category="Cost"
+          :icon="CurrencyDollarIcon"
+          :tags="[cost]"
           :onTagClicked="() => {}"
         />
       </div>

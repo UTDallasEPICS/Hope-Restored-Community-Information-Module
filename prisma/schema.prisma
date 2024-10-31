@@ -90,8 +90,6 @@ model Location {
   latitude     Float     // Changed from Int to Float
   resourceId   Int       // Foreign key
   resource     Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
-
-  
 }
 
 enum Role {
