@@ -1,44 +1,39 @@
 <script lang="ts" setup>
-import ResourceDeck from "~/components/Resource/ResourceDeck.vue";
-import NavBar from "~/components/PublicNavBar.vue";
-import FilterDeck from "~/components/Filter/FilterDeck.vue";
-import { type Resource } from "~/components/Resource/api";
+import ResourceDeck from "../components/Resource/ResourceDeck.vue";
+import NavBar from "../components/PublicNavBar.vue";
+import FilterDeck from "../components/Filter/FilterDeck.vue";
+import { type ResourceProps } from "../components/Resource/ResourceCard.vue";
+import { ref } from "vue";
+import ResourceService from "../components/Resource/api.ts";
+
+const resources = ref<ResourceProps[]>([]);
+const isLoading = ref(false);
+const error = ref(null);
+
+const loadResourcesByCategory = async (categoryId: number) => {
+  isLoading.value = true;
+  try {
+    const response = await ResourceService.fetchResourcesByCategory(categoryId);
+    resources.value = response;
+  } catch (err: any) {
+    error.value = err.message;
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
 
 <template>
   <div>
-    <NavBar />
+    <NavBar @selectCategory="loadResourcesByCategory" />
     <div class="flex flex-row flex-auto">
       <FilterDeck class="flex grow-[1]" />
-      <ResourceDeck class="flex grow-[3]" />
+      <div class="flex grow-[3] flex-col">
+        <p v-if="isLoading">Loading...</p>
+        <ResourceDeck v-else-if="resources.length" :cards="resources" />
+        <p v-else>No resources found or select a categories</p>
+        <p v-if="error">{{ error }}</p>
+      </div>
     </div>
   </div>
 </template>
-
-<script lang="ts">
-// import { ref, watch } from "vue";
-// import { useRoute } from "vue-router";
-
-// const route = useRoute();
-
-// const loading = ref(false);
-// const post = ref(null);
-// const error = ref(null);
-
-// // watch the params of the route to fetch the data again
-// watch(() => route.params.id, fetchData, { immediate: true });
-
-// async function fetchData(id) {
-//   error.value = post.value = null;
-//   loading.value = true;
-
-//   try {
-//     // replace `getPost` with your data fetching util / API wrapper
-//     post.value = await getPost(id);
-//   } catch (err) {
-//     error.value = err.toString();
-//   } finally {
-//     loading.value = false;
-//   }
-// }
-</script>

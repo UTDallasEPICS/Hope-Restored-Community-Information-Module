@@ -14,11 +14,14 @@ export interface ResourceProps {
   id: number;
   title: string;
   description: string;
-  services: string[];
+  eligibility: string;
+  cost: string;
+  languages: string[];
   demographics: string[];
   phoneNumbers: string[];
   emails: string[];
   addresses: string[];
+  link: string;
 }
 const props = defineProps<ResourceProps>();
 const phoneNumbers = props.phoneNumbers || []; // Fallback to empty array
@@ -34,8 +37,10 @@ const addresses = props.addresses || [];
       <ResourceInfo
         :title="title"
         :description="description"
-        :services="services"
+        :languages="languages"
         :demographics="demographics"
+        :eligibility="eligibility"
+        :cost="cost"
       />
       <div class="flex items-center flex-row gap-x-2">
         <button
@@ -73,8 +78,10 @@ const addresses = props.addresses || [];
       <button
         class="flex flex-row items-center gap-x-4 initial bg-hrm-dark-green hover:bg-hrm-green text-white-neutral font-semibold py-2 px-4 border border-gray-400 rounded shadow"
       >
-        <span class="uppercase">Apply on their website</span>
-        <ArrowTopRightOnSquareIcon class="w-4 h-4" />
+        <a :href="link" target="_blank" rel="noopener">
+          <span class="uppercase">Apply on their website</span>
+          <ArrowTopRightOnSquareIcon class="w-4 h-4" />
+        </a>
       </button>
     </div>
   </div>

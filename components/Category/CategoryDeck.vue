@@ -1,11 +1,30 @@
 <script lang="ts" setup>
-import { ref } from "vue";
 import { default as Category } from "./Category.vue";
-import { serveCategories } from "./composables.ts";
+import { ref, onMounted } from "vue";
+import CategoryService from "./api";
+import { type CategoryProps } from "./Category.vue";
 
-const { categories, error, isLoading } = serveCategories();
-const selectedCategory = ref<string | null>(null);
-const setSelectedCategory = (title: string) => (selectedCategory.value = title);
+const categories = ref<CategoryProps[]>([]);
+const isLoading = ref(true);
+const error = ref(null);
+const fetchCategories = async () => {
+  try {
+    const response = await CategoryService.fetchCategories();
+    categories.value = response;
+  } catch (err: any) {
+    error.value = err.message;
+  } finally {
+    isLoading.value = false;
+  }
+};
+onMounted(fetchCategories);
+
+const emit = defineEmits(["selectCategory"]);
+const selectedCategory = ref<number | null>(null);
+const setSelectedCategory = (categoryId: number) => {
+  selectedCategory.value = categoryId;
+  emit("selectCategory", categoryId);
+};
 </script>
 
 <template>
@@ -20,7 +39,7 @@ const setSelectedCategory = (title: string) => (selectedCategory.value = title);
       :id="category.id"
       :title="category.title"
       :icon="category.icon"
-      :isClicked="category.title === selectedCategory"
+      :isClicked="category.id === selectedCategory"
       @selectCategory="setSelectedCategory"
     />
     <p v-else>No categories found.</p>

@@ -6,7 +6,6 @@ type CategoryDB = Prisma.GroupGetPayload<{}>;
 
 async function fetchCategories(): Promise<CategoryProps[]> {
   try {
-    console.log(import.meta.env.NUXT_ENV_API_URL);
     const response: Response = await fetch(
       `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/group/get/all`,
       {
@@ -17,7 +16,6 @@ async function fetchCategories(): Promise<CategoryProps[]> {
       throw new Error(`Error fetching category: ${response.statusText}`);
     }
     const categories: CategoryDB[] = await response.json();
-    console.log(categories);
     return categories.map(toCategoryProps);
   } catch (error) {
     console.error(error);
