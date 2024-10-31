@@ -6,5 +6,9 @@
   <NuxtPage />
   <ResourceEdit/>
   <ResourceCard/>
+  <ResourceCreate/>
+
+  
+  
 </template>
 

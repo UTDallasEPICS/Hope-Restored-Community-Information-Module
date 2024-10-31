@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Find the group by its ID, selecting the ID, Name, and associated resources
-    const group = await prisma.groups.findUnique({
+    const group = await prisma.group.findUnique({
       where: { id: Number(id) },
       select: {
         id: true,

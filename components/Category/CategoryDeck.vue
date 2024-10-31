@@ -1,38 +1,29 @@
 <script lang="ts" setup>
-import { CakeIcon } from "@heroicons/vue/24/solid";
-import { reactive, ref } from "vue";
-import { type CategoryItem, default as Category } from "./Category.vue";
+import { ref } from "vue";
+import { default as Category } from "./Category.vue";
+import { serveCategories } from "./composables.ts";
 
-const categories = reactive<CategoryItem[]>([
-  { title: "Category 1", icon: CakeIcon },
-  { title: "Category 2", icon: CakeIcon },
-  { title: "Category 3", icon: CakeIcon },
-  { title: "Category 4", icon: CakeIcon },
-  { title: "Category 5", icon: CakeIcon },
-  { title: "Category 6", icon: CakeIcon },
-  { title: "Category 7", icon: CakeIcon },
-  { title: "Category 8", icon: CakeIcon },
-  { title: "Category 9", icon: CakeIcon },
-  { title: "Category 10", icon: CakeIcon },
-]);
-
+const { categories, error, isLoading } = serveCategories();
 const selectedCategory = ref<string | null>(null);
 const setSelectedCategory = (title: string) => (selectedCategory.value = title);
 </script>
 
 <template>
-  <div class="flex flex-row flex-auto justify-between basis-0">
+  <div
+    class="flex flex-row flex-auto justify-between basis-0 text-white-neutral"
+  >
+    <p v-if="isLoading">Loading...</p>
     <Category
+      v-else-if="categories.length"
       v-for="category in categories"
       :key="category.title"
+      :id="category.id"
       :title="category.title"
       :icon="category.icon"
+      :isClicked="category.title === selectedCategory"
       @selectCategory="setSelectedCategory"
-      :class="
-        selectedCategory === category.title
-          ? 'bg-white text-black-neutral'
-          : 'bg-black-neutral text-white-neutral'
-      "
     />
+    <p v-else>No categories found.</p>
+    <p v-if="error">{{ error }}</p>
   </div>
 </template>

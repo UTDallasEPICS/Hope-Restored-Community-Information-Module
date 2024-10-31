@@ -1,34 +1,44 @@
 <script lang="ts" setup>
-import CardDeck from "~/components/Card/CardDeck.vue";
-import NavBar from "~/components/NavBar.vue";
+import ResourceDeck from "~/components/Resource/ResourceDeck.vue";
+import NavBar from "~/components/PublicNavBar.vue";
+import FilterDeck from "~/components/Filter/FilterDeck.vue";
+import { type Resource } from "~/components/Resource/api";
 </script>
 
 <template>
   <div>
-    <!-- <h1 class="font-bold underline">Hello from Vue in WordPress!</h1>
-    <button @click="fetchData">Fetch Data from Nuxt Backend</button>
-    <p v-if="data">Received: {{ data }}</p>
-    <CardDeck /> -->
     <NavBar />
+    <div class="flex flex-row flex-auto">
+      <FilterDeck class="flex grow-[1]" />
+      <ResourceDeck class="flex grow-[3]" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-export default {
-  data() {
-    return {
-      data: null,
-    };
-  },
-  methods: {
-    async fetchData() {
-      try {
-        const response = await fetch("http://localhost:4000/api/resource");
-        this.data = await response.json();
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    },
-  },
-};
+// import { ref, watch } from "vue";
+// import { useRoute } from "vue-router";
+
+// const route = useRoute();
+
+// const loading = ref(false);
+// const post = ref(null);
+// const error = ref(null);
+
+// // watch the params of the route to fetch the data again
+// watch(() => route.params.id, fetchData, { immediate: true });
+
+// async function fetchData(id) {
+//   error.value = post.value = null;
+//   loading.value = true;
+
+//   try {
+//     // replace `getPost` with your data fetching util / API wrapper
+//     post.value = await getPost(id);
+//   } catch (err) {
+//     error.value = err.toString();
+//   } finally {
+//     loading.value = false;
+//   }
+// }
 </script>

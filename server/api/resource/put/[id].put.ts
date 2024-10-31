@@ -7,7 +7,7 @@ type UpdateResourceAttributes = {
     resourceId: number;
     name?: string;
     description?: string;
-    group?: string;
+    group: string;
     eligibility?: string;
     cost?: number;
     externalLink?: string;

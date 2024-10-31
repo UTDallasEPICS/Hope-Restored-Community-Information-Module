@@ -1,90 +1,101 @@
+<script setup lang="ts">
+import { useFetch } from 'nuxt/app';
+import { ref, watch } from 'vue';
+
+// Toggle for edit mode and selected resource ID
+const editMode = ref(false);
+const selectedResourceId = ref<number | null>(null); 
+
+// Fetch the resources data
+const { data: resources, error, refresh } = await useFetch('/api/resource/get/retrieveAll');
+
+// Watch for changes in resources to handle updated IDs correctly
+watch(resources, (newResources) => {
+  if (newResources) {
+    const updatedResource = newResources.find((res: any) => res.id === selectedResourceId.value);
+    if (!updatedResource) {
+      // Handle case where ID no longer matches
+      selectedResourceId.value = null;
+      editMode.value = false;
+    }
+  }
+});
+
+// Function to enable edit mode for a specific resource
+const enableEditMode = (resourceId: number) => {
+  selectedResourceId.value = resourceId;
+  editMode.value = true;
+};
+
+// Function to save changes for the selected resource
+const saveChanges = async () => {
+  const selectedResource = resources.value?.find((res: any) => res.id === selectedResourceId.value);
+
+  if (selectedResource) {
+    try {
+      const response = await fetch(`/api/resource/put/${selectedResourceId.value}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resourceId: selectedResourceId.value,
+          name: selectedResource.name,
+          description: selectedResource.description,
+          group: selectedResource.group?.name || "",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update resource');
+      }
+
+      // Refresh the data to get updated values from the server
+      await refresh();
+
+      // Keep selected resource ID consistent and disable edit mode
+      editMode.value = false;
+      console.log('Resource updated successfully');
+    } catch (err) {
+      console.error('Error saving changes:', err);
+    }
+  }
+};
+</script>
+
 <template>
-  <div class="resource-card">
-    <h2>Create Resource</h2>
-    <form @submit.prevent="submitForm">
-      <div>
-        <label for="name">Name:</label>
-        <input v-model="resource.name" type="text" id="name" required />
+  <div v-if="error">
+    <p>Error: {{ error.message }}</p>
+  </div>
+  <div v-else-if="!resources">
+    <p>Loading...</p>
+  </div>
+  <div v-else>
+    <!-- Display each resource -->
+    <div v-for="resource in resources" :key="resource.id" class="border border-black p-4 mb-4">
+      <div v-if="editMode && selectedResourceId === resource.id">
+        <!-- Editable fields for the selected resource -->
+        <input v-model="resource.name" type="text" placeholder="Edit Name" />
+        <input v-model="resource.description" type="text" placeholder="Edit Description" />
+        <input v-model="resource.group.name" type="text" placeholder="Edit Group" />
+        <button @click="saveChanges">Save</button>
       </div>
-      <div>
-        <label for="description">Description:</label>
-        <textarea v-model="resource.description" id="description" required></textarea>
-      </div>
-      <div>
-        <label for="group">Group:</label>
-        <input v-model="resource.group" type="text" id="group" required />
-      </div>
-      <!-- Add other fields as needed -->
-      <button type="submit">Create Resource</button>
-    </form>
+      <div v-else>
+        <!-- Display resource details in view mode -->
+        <p><strong>Name:</strong> {{ resource.name }}</p>
+        <p><strong>Description:</strong> {{ resource.description }}</p>
+        <p><strong>eligibility:</strong> {{ resource.eligibility }}</p>
+        <p v-if="resource.group"><strong>Group:</strong> {{ resource.group.name }}</p>
+        <p v-else><strong>Group:</strong> Not available</p>
 
-    <div v-if="successMessage">
-      <p>{{ successMessage }}</p>
-    </div>
+        <p v-if="resource.locations"><strong>location:</strong> {{ resource.locations }}</p>
+        <p v-else><strong>location:</strong> Not available</p>
 
-    <div v-if="errorMessage">
-      <p>{{ errorMessage }}</p>
+        <p v-if="resource.phoneNumbers"><strong>phonenumber:</strong> {{ resource.phoneNumbers }}</p>
+        <p v-else><strong>location:</strong> Not available</p>
+        
+        <button @click="enableEditMode(resource.id)">Edit</button>
+      </div>
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
-
-// Define TypeScript interfaces for the resource form
-interface Resource {
-  name: string;
-  description: string;
-  group: string;
-  // Optionally, other fields can be added here
-}
-
-export default defineComponent({
-  setup() {
-    // State variables
-    const resource = ref<Resource>({
-      name: '',
-      description: '',
-      group: '',
-    });
-
-    const successMessage = ref<string>('');
-    const errorMessage = ref<string>('');
-
-    // Function to handle form submission
-    const submitForm = async () => {
-      try {
-        const response = await fetch('/api/resource/post/one', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(resource.value),
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          successMessage.value = `Resource created successfully! ID: ${data.resource.id}`;
-        } else {
-          errorMessage.value = data.error || 'Failed to create resource';
-        }
-      } catch (error) {
-        errorMessage.value = 'An error occurred while creating the resource';
-        console.error(error);
-      }
-    };
-
-    return {
-      resource,
-      successMessage,
-      errorMessage,
-      submitForm,
-    };
-  },
-});
-</script>
-
-<style scoped>
-/* Add styles for the form */
-</style>
