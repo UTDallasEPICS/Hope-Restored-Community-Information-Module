@@ -9,6 +9,14 @@ export default defineEventHandler(async (event) => {
       const resources = await prisma.resource.findMany({
         include: {
           group: true, // Include related group data if necessary
+          locations: true,
+          phoneNumbers: {
+            include:  {
+              personal: true
+            }
+          },
+          Demo: true,
+          languages: true,
         },
       });
   
