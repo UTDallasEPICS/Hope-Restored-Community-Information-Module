@@ -44,7 +44,7 @@ const addresses = props.addresses || [];
           <span class="uppercase">View details</span>
         </button>
         <ResourceActionBar
-          :resource-actions="[ACTIONS.SHARE, ACTIONS.SUGGEST]"
+          :resource-actions="[ACTIONS.SHARE, ACTIONS.SUGGEST, ACTIONS.EDIT]"
         />
       </div>
     </div>

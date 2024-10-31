@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { defineProps, ref } from "vue";
-import { PencilIcon, ShareIcon } from "@heroicons/vue/24/solid";
+import { PencilIcon, ShareIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
 import {
   type ResourceActionProps,
   default as ResourceAction,
@@ -73,8 +73,19 @@ const suggestAction: ResourceActionable = {
   onActionUnclick: () => console.log("Suggest unclicked"),
 };
 
+const editAction: ResourceActionable = {
+  props: {
+    title: "Edit",
+    icon: PencilSquareIcon,
+    isClicked: false,
+  },
+  onActionClick: () => console.log("Edit clicked"),
+  onActionUnclick: () => console.log("Edit unclicked"),
+};
+
 export const ACTIONS = {
   SHARE: shareAction,
   SUGGEST: suggestAction,
+  EDIT: editAction,
 };
 </script>

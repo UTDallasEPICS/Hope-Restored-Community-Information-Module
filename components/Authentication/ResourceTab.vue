@@ -1,6 +1,8 @@
 <template>
     <div class="bg-white p-6 rounded-lg shadow-md">
+      <!--
       <h2 class="text-xl font-semibold mb-4">Resources</h2>
+      
       <input
         type="text"
         v-model="searchQuery"
@@ -17,12 +19,29 @@
         </li>
       </ul>
       <p v-if="filteredResources.length === 0">No resources found.</p>
+      -->
+
+      <div v-if="error">
+        <p>Error: {{ error.message }}</p>
+      </div>
+      <!-- <div v-else-if="!resources">
+        <p>Loading...</p>
+      </div> -->
+      <div v-else>
+        <ResourceDeck :resources="resources" />
+      </div>
+
     </div>
   </template>
   
   <script lang="ts">
   import { defineComponent, ref, computed } from 'vue';
-  
+  import { useFetch } from '@vueuse/core';
+  import ResourceDeck from '../Resource/ResourceDeck.vue';
+
+  const { data: resource, error } = await useFetch('/api/resource/get/retrieveAll');
+
+  /*
   export default defineComponent({
     name: 'ResourceTab',
     setup() {
@@ -50,6 +69,8 @@
       };
     },
   });
+  */
+
   </script>
   
   <style scoped>
