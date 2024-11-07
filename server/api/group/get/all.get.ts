@@ -1,16 +1,26 @@
 import { PrismaClient } from "@prisma/client";
-import { defineEventHandler } from "h3";
+import { FindManyResourceUseCase } from "~/server/usage/Resource/findMany";
+import { defineEventHandler, getQuery, createError } from "h3";
 
 const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   try {
-    // Find all the group in the database
     const groups = await prisma.group.findMany();
+
+    if (!groups || groups.length === 0) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: "Groups not found",
+      });
+    }
+
     return groups;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("Error fetching external link:", errorMessage);
-    return { error: "Failed to fetch external link" };
+    throw createError({
+      statusCode: 500,
+      statusMessage: "Error fetching groups",
+      data: error,
+    });
   }
 });

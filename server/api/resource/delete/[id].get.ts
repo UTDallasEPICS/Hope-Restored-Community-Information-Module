@@ -1,9 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import { FindOneResourceUseCase } from "~/server/usage/Resource/findOne";
+import { ArchiveResourceUseCase } from "~/server/usage/Resource/archive";
 import { defineEventHandler, createError } from "h3";
 
 const prisma = new PrismaClient();
-
 export default defineEventHandler(async (event) => {
   const id = Number(event.context.params?.id);
   if (isNaN(id)) {
@@ -13,23 +12,14 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const usage = new FindOneResourceUseCase();
+  const usage = new ArchiveResourceUseCase();
 
   try {
-    const resource = await usage.execute(id);
-
-    if (!resource) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: "Resource not found",
-      });
-    }
-
-    return resource;
+    await usage.execute(Number(id));
   } catch (error) {
     throw createError({
       statusCode: 500,
-      statusMessage: "Error fetching resource",
+      statusMessage: "Error deleting resource",
       data: error,
     });
   }

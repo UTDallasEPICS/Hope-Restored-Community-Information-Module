@@ -13,7 +13,7 @@ const emit = defineEmits(["selectCategory"]);
 <template>
   <div
     class="flex flex-col p-2 justify-between items-center"
-    @click="$emit('selectCategory', id)"
+    @click="$emit('selectCategory', title)"
     :class="
       isClicked
         ? 'bg-white text-black-neutral'

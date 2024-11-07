@@ -4,19 +4,21 @@ import NavBar from "../components/PublicNavBar.vue";
 import FilterDeck from "../components/Filter/FilterDeck.vue";
 import { type ResourceProps } from "../components/Resource/ResourceCard.vue";
 import { ref } from "vue";
-import ResourceService from "../components/Resource/api.ts";
+import ResourceService from "../components/Resource/request";
 
 const resources = ref<ResourceProps[]>([]);
 const isLoading = ref(false);
 const error = ref(null);
 
-const loadResourcesByCategory = async (categoryId: number) => {
+const loadResourcesByCategory = async (category) => {
   isLoading.value = true;
+  error.value = null;
   try {
-    const response = await ResourceService.fetchResourcesByCategory(categoryId);
+    const response = await ResourceService.fetchResourcesByCategory(category);
     resources.value = response;
   } catch (err: any) {
     error.value = err.message;
+    resources.value = [];
   } finally {
     isLoading.value = false;
   }
