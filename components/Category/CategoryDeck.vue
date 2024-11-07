@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { default as Category } from "./Category.vue";
 import { ref, onMounted } from "vue";
-import CategoryService from "./api";
+import CategoryService from "./request";
 import { type CategoryProps } from "./Category.vue";
 
 const categories = ref<CategoryProps[]>([]);
@@ -20,10 +20,10 @@ const fetchCategories = async () => {
 onMounted(fetchCategories);
 
 const emit = defineEmits(["selectCategory"]);
-const selectedCategory = ref<number | null>(null);
-const setSelectedCategory = (categoryId: number) => {
-  selectedCategory.value = categoryId;
-  emit("selectCategory", categoryId);
+const selectedCategory = ref<string | null>(null);
+const setSelectedCategory = (category) => {
+  selectedCategory.value = category;
+  emit("selectCategory", category);
 };
 </script>
 
@@ -39,7 +39,7 @@ const setSelectedCategory = (categoryId: number) => {
       :id="category.id"
       :title="category.title"
       :icon="category.icon"
-      :isClicked="category.id === selectedCategory"
+      :isClicked="category.title === selectedCategory"
       @selectCategory="setSelectedCategory"
     />
     <p v-else>No categories found.</p>
