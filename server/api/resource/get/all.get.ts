@@ -20,7 +20,6 @@ export default defineEventHandler(async (event) => {
     eligibility: query.eligibility as string,
     cost: query.cost ? parseFloat(query.cost as string) : undefined,
   };
-  console.log("filters", filters);
 
   const skip = query.skip ? parseInt(query.skip as string) : undefined;
   const take = query.take ? parseInt(query.take as string) : undefined;
@@ -28,14 +27,14 @@ export default defineEventHandler(async (event) => {
   if (!["createdAt", "updatedAt", "name", "cost"].includes(sortByField)) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Invalid sortByField",
+      message: "Invalid sortByField",
     });
   }
   const sortOrder = (query.sortByField as string) || "asc";
   if (!["asc", "desc"].includes(sortOrder)) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Invalid sortOrder",
+      message: "Invalid sortOrder",
     });
   }
   const usage = new FindManyResourceUseCase();
@@ -49,7 +48,7 @@ export default defineEventHandler(async (event) => {
     if (!resources || resources.length === 0) {
       throw createError({
         statusCode: 404,
-        statusMessage: "Resources not found",
+        message: "Resources not found",
       });
     }
 
@@ -57,7 +56,7 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     throw createError({
       statusCode: 500,
-      statusMessage: "Error fetching resources",
+      message: "Error fetching resources",
       data: error,
     });
   }

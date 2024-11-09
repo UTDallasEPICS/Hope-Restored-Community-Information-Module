@@ -5,20 +5,19 @@ const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   try {
-    const groups = await prisma.group.findMany();
-    if (!groups || groups.length === 0) {
+    const languages = await prisma.language.findMany();
+    if (!languages || languages.length === 0) {
       throw createError({
         statusCode: 404,
-        message: "Groups not found",
+        message: "Languages not found",
       });
     }
-
-    return groups;
+    return languages;
   } catch (error) {
     console.log(error);
     throw createError({
       statusCode: 500,
-      message: "Error fetching groups",
+      message: "Error fetching languages",
       data: error,
     });
   }

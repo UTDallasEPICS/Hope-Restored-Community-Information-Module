@@ -1,14 +1,7 @@
 <template>
   <div class="font-bold">
     <NuxtRouteAnnouncer />
-    <AppFooter/>
+    <AppFooter />
   </div>
   <NuxtPage />
-  <ResourceEdit/>
-  <ResourceCard/>
-  <ResourceCreate/>
-
-  
-  
 </template>
-

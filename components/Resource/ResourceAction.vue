@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ShareIcon } from "@heroicons/vue/24/solid";
 import { defineProps, defineEmits } from "vue";
 export interface ResourceActionProps {
   title: string;

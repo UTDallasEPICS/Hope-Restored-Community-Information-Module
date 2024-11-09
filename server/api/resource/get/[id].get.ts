@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   if (isNaN(id)) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Invalid resource ID",
+      message: "Invalid resource ID",
     });
   }
 
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     if (!resource) {
       throw createError({
         statusCode: 404,
-        statusMessage: "Resource not found",
+        message: "Resource not found",
       });
     }
 
@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     throw createError({
       statusCode: 500,
-      statusMessage: "Error fetching resource",
+      message: "Error fetching resource",
       data: error,
     });
   }

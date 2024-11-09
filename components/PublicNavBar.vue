@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import SearchField from "./SearchField.vue";
 import CategoryDeck from "./Category/CategoryDeck.vue";
-
-defineEmits(["selectCategory"]);
 </script>
 
 <template>
@@ -11,7 +9,7 @@ defineEmits(["selectCategory"]);
       <p class="text-white-neutral">Insert Image</p>
       <div class="flex flex-col flex-auto gap-y-4">
         <SearchField />
-        <CategoryDeck @selectCategory="$emit('selectCategory', $event)" />
+        <CategoryDeck />
       </div>
     </div>
   </nav>

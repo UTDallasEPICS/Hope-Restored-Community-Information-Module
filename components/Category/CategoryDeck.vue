@@ -3,6 +3,7 @@ import { default as Category } from "./Category.vue";
 import { ref, onMounted } from "vue";
 import CategoryService from "./request";
 import { type CategoryProps } from "./Category.vue";
+import { useResourceStore } from "../Resource/resourceStore";
 
 const categories = ref<CategoryProps[]>([]);
 const isLoading = ref(true);
@@ -19,11 +20,11 @@ const fetchCategories = async () => {
 };
 onMounted(fetchCategories);
 
-const emit = defineEmits(["selectCategory"]);
+const resourceStore = useResourceStore();
 const selectedCategory = ref<string | null>(null);
 const setSelectedCategory = (category) => {
   selectedCategory.value = category;
-  emit("selectCategory", category);
+  resourceStore.loadResourcesByCategory(category);
 };
 </script>
 
