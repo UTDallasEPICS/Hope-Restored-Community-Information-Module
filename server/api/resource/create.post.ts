@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   if (!data.name || !data.description) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Name and description are required",
+      message: "Name and description are required",
     });
   }
   const usage = new CreateResourceUseCase();
@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     throw createError({
       statusCode: 500,
-      statusMessage: "Error creating resource",
+      message: "Error creating resource",
       data: error,
     });
   }

@@ -24,7 +24,7 @@ export interface ResourceProps {
   link: string;
 }
 const props = defineProps<ResourceProps>();
-const phoneNumbers = props.phoneNumbers || []; // Fallback to empty array
+const phoneNumbers = props.phoneNumbers || [];
 const emails = props.emails || [];
 const addresses = props.addresses || [];
 </script>

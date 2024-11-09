@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   if (isNaN(id)) {
     throw createError({
       statusCode: 400,
-      statusMessage: "Invalid resource ID",
+      message: "Invalid resource ID",
     });
   }
 
@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
   } catch (error) {
     throw createError({
       statusCode: 500,
-      statusMessage: "Error deleting resource",
+      message: "Error deleting resource",
       data: error,
     });
   }
