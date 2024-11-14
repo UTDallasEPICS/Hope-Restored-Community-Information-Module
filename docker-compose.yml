@@ -1,4 +1,4 @@
-name: HRM-resources
+name: hrm-resources
 services:
   postgres:
     container_name: database
