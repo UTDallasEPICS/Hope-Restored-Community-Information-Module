@@ -35,22 +35,7 @@ import SettingsTab from '../components/Authentication/SettingsTab.vue';
 
 
 import { ref } from 'vue'
-import {
-  TransitionRoot,
-  TransitionChild,
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-} from '@headlessui/vue'
 
-const isOpen = ref(true)
-
-function closeModal() {
-  isOpen.value = false
-}
-function openModal() {
-  isOpen.value = true
-}
 
 // export default defineComponent({
 //   name: 'AdminIndex',

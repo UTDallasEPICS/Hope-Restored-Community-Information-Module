@@ -3,7 +3,7 @@ import { useResourceStore } from "../Resource/resourceStore";
 import type { ResourceDB } from "~/server/db/constants";
 import FilterService from "./request";
 
-const resourceStore = useResourceStore();
+//const resourceStore = useResourceStore();
 export interface FilterItem {
   label: string;
   isChecked: boolean;

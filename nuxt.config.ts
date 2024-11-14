@@ -16,7 +16,5 @@ export default defineNuxtConfig({
   app: {
     baseURL: '/',
   },
-  routeRules: {
-    '/api/**': { ssr: false }, // This rule ensures that API routes are handled server-side
-  },
+  
 });
