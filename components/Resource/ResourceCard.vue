@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { defineProps } from "vue";
-import popup from "./popup.vue";
-
+import { default as ResourcePopup } from "./ResourcePopup.vue";
 import { default as ResourceInfo } from "./ResourceInfo.vue";
 import { default as ResourceNextStep } from "./ResourceNextStep.vue";
 import { ACTIONS, default as ResourceActionBar } from "./ResourceActionBar.vue";
@@ -11,7 +10,7 @@ import {
   MapPinIcon,
   PhoneIcon,
 } from "@heroicons/vue/24/solid";
-import {ref} from "vue";
+import { ref } from "vue";
 export interface ResourceProps {
   id: number;
   title: string;
@@ -30,20 +29,43 @@ const phoneNumbers = props.phoneNumbers || [];
 const emails = props.emails || [];
 const addresses = props.addresses || [];
 
-const isOpen = ref(false);
+const resourcePopupRef = ref();
+const resourceActionBarRef = ref();
 
-function openModal() {
-  console.log("open modal")
-  isOpen.value = true;
+function onActionClicked(title: string) {
+  if (title === ACTIONS.SHARE.title) {
+    console.log("share");
+  } else if (title === ACTIONS.SUGGEST.title) {
+    console.log("suggest");
+  } else if (title === ACTIONS.EDIT.title) {
+    resourcePopupRef.value.openModal();
+  } else {
+    console.log("Not a valid action to be clicked");
+  }
+}
+function onActionUnclicked(title: string) {
+  if (title === ACTIONS.SHARE.title) {
+    console.log("unshare");
+  } else if (title === ACTIONS.SUGGEST.title) {
+    console.log("unsuggest");
+  } else if (title === ACTIONS.EDIT.title) {
+    resourcePopupRef.value.closeModal();
+  } else {
+    console.log("Not a valid action to be unclicked");
+  }
 }
 
-function closeModal() {
-  isOpen.value = false;
+function onPopupClose() {
+  resourceActionBarRef.value.onActionBarClicked("");
 }
-
 </script>
 
 <template>
+  <ResourcePopup
+    ref="resourcePopupRef"
+    :id="props.id"
+    @closeModal="onPopupClose()"
+  />
   <div
     class="flex flex-none flex-row p-4 items-stretch border-t-2 border-black-neutral gap-y-10"
   >
@@ -63,14 +85,11 @@ function closeModal() {
           <span class="uppercase">View details</span>
         </button>
         <ResourceActionBar
+          ref="resourceActionBarRef"
           :resource-actions="[ACTIONS.SHARE, ACTIONS.SUGGEST, ACTIONS.EDIT]"
-          @openModal = openModal()
+          @actionClicked="onActionClicked($event)"
+          @actionUnclicked="onActionUnclicked($event)"
         />
-        <popup
-        :id="id"
-        :isOpen="isOpen"
-        @closeModal=closeModal()
-         />
       </div>
     </div>
     <div class="flex w-2 bg-black-neutral my-2 rounded"></div>
