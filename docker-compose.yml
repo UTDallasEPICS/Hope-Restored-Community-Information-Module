@@ -1,19 +1,15 @@
-name: hrm-resources
 services:
-  postgres:
-    container_name: database
+  twcg-db:
     image: postgres
-    hostname: localhost
-    ports:
-      - "5432:5432"
+    restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      - POSTGRES_USER=postgres
+      - POSTGRES_DATABASE=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5005:5432'
     volumes:
-      - "HRM-postgres:/var/lib/postgresql/data"
-    restart: unless-stopped
+      - twcg-db:/var/lib/postgresql/data
 volumes:
-  HRM-postgres:
-# References:
-# https://medium.com/@jewelski/quickly-set-up-a-local-postgres-database-using-docker-5098052a4726
+  twcg-db:
+    driver: local
