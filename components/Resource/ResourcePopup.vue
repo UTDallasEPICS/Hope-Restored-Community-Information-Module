@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ResourceService from "./request";
-import { ref } from 'vue';
+import { ref } from "vue";
 import {
   TransitionRoot,
   TransitionChild,
@@ -10,29 +10,31 @@ import {
 } from "@headlessui/vue";
 
 const props = defineProps({
-  isOpen: Boolean, // Accept the isOpen prop to control visibility
   id: Number,
 });
 const emit = defineEmits(["closeModal"]);
-if(props.id !== undefined){
-  const response = await ResourceService.fetchResourcesByID(props.id);
-
+async function submit() {
+  if (props.id !== undefined) {
+    const response = await ResourceService.fetchResourcesByID(props.id);
+  }
 }
 
-function submit() {}
-
 const editMode = ref(false);
-
 function ToggleEditMode() {
   editMode.value = true;
 }
 
-
-
+const isOpen = ref(false);
+const openModal = () => (isOpen.value = true);
+const closeModal = () => (isOpen.value = false);
+defineExpose({
+  openModal,
+  closeModal,
+});
 </script>
 <template>
-  <TransitionRoot appear :show="props.isOpen" as="template">
-    <Dialog as="div" class="relative z-10">
+  <TransitionRoot appear :show="isOpen" as="template">
+    <Dialog as="div" @close="closeModal" class="relative z-10">
       <TransitionChild
         as="template"
         enter="duration-300 ease-out"
@@ -92,11 +94,7 @@ function ToggleEditMode() {
                 >
                   edit
                 </button>-->
-                <button
-                  type="button"
-                  class="mx-1"
-                  @click="$emit('closeModal')"
-                >
+                <button type="button" class="mx-1" @click="$emit('closeModal')">
                   Got it, thanks!
                 </button>
               </div>

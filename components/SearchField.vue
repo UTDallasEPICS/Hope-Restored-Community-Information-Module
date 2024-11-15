@@ -1,23 +1,21 @@
 <script lang="ts" setup>
 import { MagnifyingGlassCircleIcon } from "@heroicons/vue/24/solid";
 import { defineEmits, ref } from "vue";
-const emit = defineEmits(["searchResources"]);
-const description = ref("");
+import { useResourceStore } from "./Resource/resourceStore";
+const search = ref("");
 const location = ref("");
 
+const resourceStore = useResourceStore();
 const searchResources = async () => {
-  emit("searchResources", {
-    description: description.value,
-    location: location.value,
-  });
+  resourceStore.loadResourcesBySearchTerm(search.value);
 };
 </script>
 
 <template>
   <form @submit.prevent="searchResources" class="flex flex-row flex-auto">
     <input
-      v-model="description"
-      id="description"
+      v-model="search"
+      id="search"
       type="text"
       placeholder="What are you looking for today?"
       class="border p-2 rounded-md flex-1"

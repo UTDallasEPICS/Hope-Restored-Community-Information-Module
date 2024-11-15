@@ -13,6 +13,7 @@ export type ResourceFilterInput = {
   cost?: number;
   createdAt?: Date;
   updatedAt?: Date;
+  search?: string;
 };
 
 export type SortOption = {
@@ -30,7 +31,8 @@ export class FindManyResourceUseCase {
     const whereClause = {
       archived: false,
       name: filters.name,
-      description: filters.description,
+      // TODO: combine name and description into a single search field
+      // description: filters.search ? { search: filters.search } : undefined,
       group: filters.groupName ? { name: filters.groupName } : undefined,
       demographics: filters.demographics
         ? { some: { name: { in: filters.demographics } } }

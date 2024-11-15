@@ -1,102 +1,68 @@
 <script lang="ts" setup>
 import { defineProps, ref } from "vue";
-import { PencilIcon, ShareIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
 import {
-  type ResourceActionProps,
-  default as ResourceAction,
-} from "./ResourceAction.vue";
-export interface ResourceActionable {
-  props: ResourceActionProps;
-  onActionClick: () => void;
-  onActionUnclick: () => void;
-}
+  PencilIcon,
+  ShareIcon,
+  PencilSquareIcon,
+} from "@heroicons/vue/24/solid";
+import ResourceAction from "./ResourceAction.vue";
 export interface ResourceActionBarProps {
-  resourceActions: ResourceActionable[];
+  resourceActions: ResourceAction[];
 }
-const props = defineProps<ResourceActionBarProps>();
+defineProps<ResourceActionBarProps>();
+const emit = defineEmits(["actionClicked", "actionUnclicked"]);
 const selectedAction = ref<string>("");
 const onActionBarClicked = (title: string) => {
   if (selectedAction.value === "") {
-    props.resourceActions
-      .find((action) => action.props.title === title)
-      ?.onActionClick();
+    emit("actionClicked", title);
     selectedAction.value = title;
   } else if (selectedAction.value === title) {
-    props.resourceActions
-      .find((action) => action.props.title === title)
-      ?.onActionUnclick();
+    emit("actionUnclicked", title);
     selectedAction.value = "";
+  } else if (title === "") {
+    emit("actionUnclicked", selectedAction.value);
+    selectedAction.value = title;
   } else {
-    props.resourceActions
-      .filter((action) => action.props.title !== title)
-      .forEach((action) => action.onActionUnclick());
-    props.resourceActions
-      .find((action) => action.props.title === title)
-      ?.onActionClick();
+    emit("actionUnclicked", selectedAction.value);
+    emit("actionClicked", title);
     selectedAction.value = title;
   }
 };
-const emit = defineEmits(['openModal']);
-
+defineExpose({
+  onActionBarClicked,
+});
 </script>
 
 <template>
   <div class="flex flex-row flex-auto justify-start basis-0">
     <ResourceAction
-      v-for="{ props } in resourceActions"
+      v-for="props in resourceActions"
       :key="props.title"
       :title="props.title"
       :icon="props.icon"
       :isClicked="selectedAction === props.title"
       @actionClicked="onActionBarClicked($event)"
-      
     />
-    
   </div>
 </template>
 
 <script lang="ts">
-import { defineEmits } from "vue";
-const emit = defineEmits(['openModal']);
-
-function open (){
-  emit("openModal")
+export interface ResourceAction {
+  title: string;
+  icon: any;
 }
-
-const shareAction: ResourceActionable = {
-  props: {
+export const ACTIONS = {
+  SHARE: {
     title: "Share",
     icon: ShareIcon,
-    isClicked: false,
   },
-  onActionClick: () => console.log("Share clicked"),
-  onActionUnclick: () => console.log("Share unclicked"),
-};
-
-const suggestAction: ResourceActionable = {
-  props: {
+  SUGGEST: {
     title: "Suggest",
     icon: PencilIcon,
-    isClicked: false,
   },
-  onActionClick: () => console.log("Suggest clicked"),
-  onActionUnclick: () => console.log("Suggest unclicked"),
-};
-
-const editAction: ResourceActionable = {
-  props: {
+  EDIT: {
     title: "Edit",
     icon: PencilSquareIcon,
-    isClicked: false,
   },
-  onActionClick: () => open(),
-  onActionUnclick: () => console.log("Edit unclicked"),
-};
-
-export const ACTIONS = {
-  SHARE: shareAction,
-  SUGGEST: suggestAction,
-  EDIT: editAction,
-  
 };
 </script>

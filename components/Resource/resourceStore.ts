@@ -41,6 +41,23 @@ export function useResourceStore() {
     }
   }
 
+  async function loadResourcesBySearchTerm(searchTerm: string) {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      const response = await ResourceService.fetchResourcesBySearchTerm(
+        searchTerm
+      );
+      resources.value = response;
+      filterResource(filterStore.getFilterGroups.value);
+    } catch (err: any) {
+      error.value = err.message;
+      resources.value = [];
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   function setResources(newResources: ResourceDB[]) {
     resources.value = newResources;
   }
@@ -58,6 +75,7 @@ export function useResourceStore() {
     getError,
     setResources,
     loadResourcesByCategory,
+    loadResourcesBySearchTerm,
     clearResources,
   };
 }

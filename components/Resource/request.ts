@@ -43,7 +43,33 @@ async function fetchResourcesByCategory(
   }
 }
 
+async function fetchResourcesBySearchTerm(
+  searchTerm: string
+): Promise<ResourceDB[]> {
+  try {
+    const query = new URLSearchParams({ search: searchTerm });
+
+    const response: Response = await fetch(
+      `${
+        import.meta.env.VITE_NUXT_ENV_API_URL
+      }/api/resource/get/search?${query}`,
+      {
+        method: "GET",
+      }
+    );
+    if (response.status !== 200) {
+      throw new Error(`Error fetching resources: ${response.statusText}`);
+    }
+    const resources: ResourceDB[] = await response.json();
+    return resources;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 export default {
   fetchResourcesByID,
   fetchResourcesByCategory,
+  fetchResourcesBySearchTerm,
 };

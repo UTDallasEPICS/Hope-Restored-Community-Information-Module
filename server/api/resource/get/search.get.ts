@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { FindManyResourceUseCase } from "~/server/usage/Resource/findMany";
+import { SearchManyResourceUseCase } from "~/server/usage/Resource/searchMany";
 import { defineEventHandler, getQuery, createError } from "h3";
 
 const prisma = new PrismaClient();
@@ -8,24 +8,17 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
   const filters = {
-    name: query.name as string,
-    description: query.description as string,
-    groupName: query.groupName as string,
-    demographics: query.demographics
-      ? (query.demographics as string).split(",")
-      : undefined,
-    languages: query.languages
-      ? (query.languages as string).split(",")
-      : undefined,
-    eligibility: query.eligibility as string,
-    cost: query.cost ? parseFloat(query.cost as string) : undefined,
     search: query.search as string,
   };
 
   const skip = query.skip ? parseInt(query.skip as string) : undefined;
   const take = query.take ? parseInt(query.take as string) : undefined;
   const sortByField = (query.sortByField as string) || "name";
-  if (!["createdAt", "updatedAt", "name", "cost"].includes(sortByField)) {
+  if (
+    !["createdAt", "updatedAt", "name", "cost", "relevance"].includes(
+      sortByField
+    )
+  ) {
     throw createError({
       statusCode: 400,
       message: "Invalid sortByField",
@@ -38,7 +31,7 @@ export default defineEventHandler(async (event) => {
       message: "Invalid sortOrder",
     });
   }
-  const usage = new FindManyResourceUseCase();
+  const usage = new SearchManyResourceUseCase();
 
   try {
     const resources = await usage.execute(filters, skip, take, {
