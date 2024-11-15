@@ -4,6 +4,7 @@ datasource db {
 }
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 enum Role {
@@ -16,6 +17,8 @@ model User {
   password  String                        // Password field
   name      String?                       // Optional name field (can be made required by removing `?`)
   role      Role     @default(ADMIN)       // Role can be USER or ADMIN
+
+  @@map("user") // Table name in the database
 }
 
 model Resource {
@@ -36,31 +39,40 @@ model Resource {
   createdAt  DateTime @default(now()) // Default value for createdAt
   updatedAt  DateTime @updatedAt      // UpdatedAt field
   //tags Tags[]
+  @@map("resource") // Table name in the database
 }
 
 model Language {
   id Int              @id @default(autoincrement()) // Primary key with auto-increment
   name String         @unique
   resources Resource[]
+
+  @@map("language") // Table name in the database
 }
 
-//model Tags {
+//model Tag {
 //  id Int                @id @default(autoincrement()) // Primary key with auto-increment
 //  name String
 //  resourceId Int @unique
 //  resource Resource[]
+// 
+//  @@map("tag") // Table name in the database
 //}
 
 model Group {
   id Int              @id @default(autoincrement()) // Primary key with auto-increment
   name String         @unique
   resources Resource[]
+
+  @@map("group") // Table name in the database
 }
 
 model Demographic{
   id Int                @id @default(autoincrement()) // Primary key with auto-increment
   name String           @unique
   resources Resource[]
+
+  @@map("demographic") // Table name in the database
 }
 
 model PhoneNumber {
@@ -70,6 +82,8 @@ model PhoneNumber {
   description String?       // Optional description of the phone number
   resourceId Int
   resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@map("phone_number") // Table name in the database
 }
 
 model Email {
@@ -79,6 +93,8 @@ model Email {
   description String?       // Optional description of the email
   resourceId Int
   resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@map("email") // Table name in the database
 }
 
 model Location {
@@ -93,4 +109,6 @@ model Location {
   latitude     Float?    // Changed from Int to Float
   resourceId   Int       // Foreign key
   resource     Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@map("location") // Table name in the database
 }

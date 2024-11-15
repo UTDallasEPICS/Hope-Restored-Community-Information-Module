@@ -1,15 +1,17 @@
 services:
-  twcg-db:
-    image: postgres
+  postgres:
+    container_name: database
+    image: paradedb/paradedb:latest
+    hostname: localhost
     restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_DATABASE=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - '5005:5432'
+      - "5005:5432"
     volumes:
-      - twcg-db:/var/lib/postgresql/data
+      - hrm-db:/var/lib/postgresql/data
 volumes:
-  twcg-db:
+  hrm-db:
     driver: local

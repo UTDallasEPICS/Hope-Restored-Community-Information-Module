@@ -1,5 +1,4 @@
-import { defineNuxtConfig } from 'nuxt/config'
-
+import { defineNuxtConfig } from "nuxt/config";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -14,9 +13,10 @@ export default defineNuxtConfig({
     },
   },
   app: {
-    baseURL: '/',
+    baseURL: "/",
   },
   routeRules: {
-    "/api/**": {ssr: false},
-  }
+    // This rule ensures that API routes are handled server-side
+    "/api/**": { ssr: false },
+  },
 });
