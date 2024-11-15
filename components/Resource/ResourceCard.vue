@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { defineProps } from "vue";
+import popup from "./popup.vue";
+
 import { default as ResourceInfo } from "./ResourceInfo.vue";
 import { default as ResourceNextStep } from "./ResourceNextStep.vue";
 import { ACTIONS, default as ResourceActionBar } from "./ResourceActionBar.vue";
@@ -9,7 +11,7 @@ import {
   MapPinIcon,
   PhoneIcon,
 } from "@heroicons/vue/24/solid";
-
+import {ref} from "vue";
 export interface ResourceProps {
   id: number;
   title: string;
@@ -27,6 +29,18 @@ const props = defineProps<ResourceProps>();
 const phoneNumbers = props.phoneNumbers || [];
 const emails = props.emails || [];
 const addresses = props.addresses || [];
+
+const isOpen = ref(false);
+
+function openModal() {
+  console.log("open modal")
+  isOpen.value = true;
+}
+
+function closeModal() {
+  isOpen.value = false;
+}
+
 </script>
 
 <template>
@@ -50,7 +64,13 @@ const addresses = props.addresses || [];
         </button>
         <ResourceActionBar
           :resource-actions="[ACTIONS.SHARE, ACTIONS.SUGGEST, ACTIONS.EDIT]"
+          @openModal = openModal()
         />
+        <popup
+        :id="id"
+        :isOpen="isOpen"
+        @closeModal=closeModal()
+         />
       </div>
     </div>
     <div class="flex w-2 bg-black-neutral my-2 rounded"></div>

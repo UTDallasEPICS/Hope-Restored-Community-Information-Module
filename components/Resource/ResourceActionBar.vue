@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { defineProps, ref } from "vue";
 import { PencilIcon, ShareIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
-import popup from "./popup.vue";
 import {
   type ResourceActionProps,
   default as ResourceAction,
@@ -14,10 +13,6 @@ export interface ResourceActionable {
 export interface ResourceActionBarProps {
   resourceActions: ResourceActionable[];
 }
-
-
-
-
 const props = defineProps<ResourceActionBarProps>();
 const selectedAction = ref<string>("");
 const onActionBarClicked = (title: string) => {
@@ -41,6 +36,7 @@ const onActionBarClicked = (title: string) => {
     selectedAction.value = title;
   }
 };
+const emit = defineEmits(['openModal']);
 
 </script>
 
@@ -55,22 +51,16 @@ const onActionBarClicked = (title: string) => {
       @actionClicked="onActionBarClicked($event)"
       
     />
-    <popup
-      :isOpen="isOpen"
-      @closeModal = closeModal()
-    />
+    
   </div>
 </template>
 
 <script lang="ts">
+import { defineEmits } from "vue";
+const emit = defineEmits(['openModal']);
 
-const isOpen = ref(false)
-function openModal() {
-  isOpen.value = true
-}
-
-function closeModal() {
-  isOpen.value = false
+function open (){
+  emit("openModal")
 }
 
 const shareAction: ResourceActionable = {
@@ -99,7 +89,7 @@ const editAction: ResourceActionable = {
     icon: PencilSquareIcon,
     isClicked: false,
   },
-  onActionClick: () => openModal(),
+  onActionClick: () => open(),
   onActionUnclick: () => console.log("Edit unclicked"),
 };
 
@@ -107,5 +97,6 @@ export const ACTIONS = {
   SHARE: shareAction,
   SUGGEST: suggestAction,
   EDIT: editAction,
+  
 };
 </script>

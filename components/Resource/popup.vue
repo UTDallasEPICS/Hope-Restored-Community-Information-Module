@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import fetchResourcesByID from "./request";
+import ResourceService from "./request";
 import { ref } from 'vue';
 import {
   TransitionRoot,
@@ -11,8 +11,13 @@ import {
 
 const props = defineProps({
   isOpen: Boolean, // Accept the isOpen prop to control visibility
+  id: Number,
 });
 const emit = defineEmits(["closeModal"]);
+if(props.id !== undefined){
+  const response = await ResourceService.fetchResourcesByID(props.id);
+
+}
 
 function submit() {}
 
@@ -63,6 +68,7 @@ function ToggleEditMode() {
                 Edit Resources
               </DialogTitle>
               <div class="mt-2">
+                <!--
                 <div v-if="editMode">
 
                 </div>
@@ -85,7 +91,7 @@ function ToggleEditMode() {
                   @click="ToggleEditMode()"
                 >
                   edit
-                </button>
+                </button>-->
                 <button
                   type="button"
                   class="mx-1"
