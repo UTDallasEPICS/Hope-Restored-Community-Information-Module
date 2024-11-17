@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ResourceService from "./request";
-import { ref } from "vue";
+import { type ResourceDB } from "../../server/db/constants";
+import { ref, onMounted } from "vue";
 import {
   TransitionRoot,
   TransitionChild,
@@ -13,11 +14,30 @@ const props = defineProps({
   id: Number,
 });
 const emit = defineEmits(["closeModal"]);
-async function submit() {
+
+const resources = ref<ResourceDB | null>(null); // Store a single resource, default is null.
+const error = ref<string | null>(null);
+
+onMounted(async () => {
   if (props.id !== undefined) {
-    const response = await ResourceService.fetchResourcesByID(props.id);
+    try {
+      const fetchedResources = await ResourceService.fetchResourcesByID(props.id);
+      // Check if the result is not empty and assign the first item
+      if (Array.isArray(fetchedResources) && fetchedResources.length > 0) {
+        resources.value = fetchedResources[0];
+      } else {
+        resources.value = null;
+        error.value = "No resource found.";
+      }
+    } catch (err: any) {
+      error.value = err.message;
+      resources.value = null;
+    }
   }
-}
+});
+
+
+async function submit() {}
 
 const editMode = ref(false);
 function ToggleEditMode() {
@@ -70,20 +90,26 @@ defineExpose({
                 Edit Resources
               </DialogTitle>
               <div class="mt-2">
-                <!--
-                <div v-if="editMode">
-
+                <div v-if="!resources">
+                  No resource found.
                 </div>
-                <div v-else>
-                  <button
-                  type="button"
-                  class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                  @click="ToggleEditMode()"
-                  >
-                    edit
-                  </button>
+                <div>
+                  <div v-if="editMode">
+                    <form>
+                      <label for="name">Name:</label>
+                      <input type="text" id="name" v-model="resources" />
+                    </form>
+                  </div>
+                  <div v-else>
+                    <button
+                      type="button"
+                      class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      @click="ToggleEditMode()"
+                    >
+                      edit
+                    </button>
+                  </div>
                 </div>
-                
               </div>
 
               <div class="mt-4">
@@ -93,7 +119,7 @@ defineExpose({
                   @click="ToggleEditMode()"
                 >
                   edit
-                </button>-->
+                </button>
                 <button type="button" class="mx-1" @click="$emit('closeModal')">
                   Got it, thanks!
                 </button>
