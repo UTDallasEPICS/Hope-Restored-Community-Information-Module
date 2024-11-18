@@ -19,6 +19,6 @@
     "jsx": "preserve"
     // "baseUrl": "src" // Move this to another place if needed
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "vite-env.d.ts"],
   "exclude": ["node_modules"]
 }
