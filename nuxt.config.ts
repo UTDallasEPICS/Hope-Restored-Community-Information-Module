@@ -3,6 +3,7 @@ import { defineNuxtConfig } from "nuxt/config";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
+  ssr: true,
   devtools: { enabled: false },
   modules: ["@nuxtjs/tailwindcss"],
   css: ["~/assets/css/App.css"],
@@ -15,8 +16,5 @@ export default defineNuxtConfig({
   app: {
     baseURL: "/",
   },
-  routeRules: {
-    // This rule ensures that API routes are handled server-side
-    "/api/**": { ssr: false },
-  },
+  
 });

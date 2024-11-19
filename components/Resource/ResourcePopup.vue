@@ -49,19 +49,17 @@ onMounted(async () => {
 
 async function submit() {
   emit("closeModal");
-//  console.log("bomboclat", resources.value);
+  //console.log("bomboclat", resources.value);
   if (resources.value) {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/resource/update/${props.id}`,
-        {
-          method: "PUT",
-          body: JSON.stringify(resources.value), // Ensure this is serialized once
-          headers: {
-            "Content-Type": "application/json", // Ensure the server knows it's JSON
-          },
-        }
-      ); 
+      // Send PUT Request
+      const response = await fetch(`/api/resource/update/${props.id}`, {
+        method: "PUT",
+        body: JSON.stringify(resources.value),
+        headers: {
+          "Content-Type": "application/json", // Inform the server about the payload format
+        },
+      });
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -259,7 +257,7 @@ defineExpose({
                   <button
                     type="button"
                     class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    @click="submit"
+                    @click="submit()"
                   >
                     save
                   </button>
