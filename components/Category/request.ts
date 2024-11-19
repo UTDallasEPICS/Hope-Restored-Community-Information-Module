@@ -1,10 +1,7 @@
 import { Prisma } from "@prisma/client";
-import { type CategoryProps } from "./Category.vue";
-import { CakeIcon, UserIcon, HomeIcon } from "@heroicons/vue/24/solid";
-
 type CategoryDB = Prisma.GroupGetPayload<{}>;
 
-async function fetchCategories(): Promise<CategoryProps[]> {
+async function fetchCategories(): Promise<CategoryDB[]> {
   try {
     const response: Response = await fetch(
       `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/group/get/all`,
@@ -15,8 +12,7 @@ async function fetchCategories(): Promise<CategoryProps[]> {
     if (!response.ok) {
       throw new Error(`Error fetching category: ${response.statusText}`);
     }
-    const categories: CategoryDB[] = await response.json();
-    return categories.map(toCategoryProps);
+    return response.json();
   } catch (error) {
     console.error(error);
     throw error;
@@ -25,19 +21,4 @@ async function fetchCategories(): Promise<CategoryProps[]> {
 
 export default {
   fetchCategories,
-};
-
-function toCategoryProps(category: CategoryDB): CategoryProps {
-  return {
-    id: category.id,
-    title: category.name,
-    icon: CATEGORY_ICONS[category.name] || CATEGORY_ICONS.Default,
-    isClicked: false,
-  };
-}
-
-const CATEGORY_ICONS: { [key: string]: typeof CakeIcon } = {
-  "Category 1": UserIcon,
-  "Category 2": HomeIcon,
-  Default: CakeIcon,
 };

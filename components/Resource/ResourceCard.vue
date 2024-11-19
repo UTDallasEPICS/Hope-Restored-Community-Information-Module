@@ -67,7 +67,7 @@ function onPopupClose() {
     @closeModal="onPopupClose()"
   />
   <div
-    class="flex flex-none flex-row p-4 items-stretch border-t-2 border-black-neutral gap-y-10"
+    class="flex flex-none flex-row p-4 items-stretch border-b-2 border-black-neutral gap-y-10"
   >
     <div class="flex flex-auto flex-col justify-between">
       <ResourceInfo
@@ -93,7 +93,7 @@ function onPopupClose() {
       </div>
     </div>
     <div class="flex w-2 bg-black-neutral my-2 rounded"></div>
-    <div class="flex flex-initial flex-col justify-between px-4">
+    <div class="flex flex-none w-[20rem] flex-col justify-between px-4">
       <div class="flex flex-col gap-y-4 justify-start pb-4">
         <ResourceNextStep
           v-if="phoneNumbers.length > 0"
@@ -115,9 +115,14 @@ function onPopupClose() {
         />
       </div>
       <button
-        class="flex flex-row items-center gap-x-4 initial bg-hrm-dark-green hover:bg-hrm-green text-white-neutral font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+        class="initial bg-hrm-dark-green hover:bg-hrm-green text-white-neutral font-semibold py-2 px-4 border border-gray-400 rounded shadow"
       >
-        <a :href="link" target="_blank" rel="noopener">
+        <a
+          :href="link"
+          target="_blank"
+          rel="noopener"
+          class="flex flex-row items-center gap-x-4"
+        >
           <span class="uppercase">Apply on their website</span>
           <ArrowTopRightOnSquareIcon class="w-4 h-4" />
         </a>
