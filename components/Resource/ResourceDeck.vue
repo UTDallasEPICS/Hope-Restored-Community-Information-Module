@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { default as ResourceCard } from "./ResourceCard.vue";
+import ResourceCard from "./ResourceCard.vue";
+import ResourceSkeleton from "./ResourceSkeleton.vue";
 import { useResourceStore } from "./resourceStore";
+import { TransitionRoot } from "@headlessui/vue";
 
 const resourceStore = useResourceStore();
 const resources = resourceStore.getResourceProps;
@@ -9,24 +11,40 @@ const error = resourceStore.getError;
 </script>
 
 <template>
-  <p v-if="isLoading">Loading...</p>
-  <div v-else-if="resources.length > 0" class="flex flex-auto flex-col p-10">
-    <ResourceCard
-      v-for="card in resources"
-      :key="card.title"
-      :id="card.id"
-      :title="card.title"
-      :description="card.description"
-      :demographics="card.demographics"
-      :phoneNumbers="card.phoneNumbers"
-      :emails="card.emails"
-      :addresses="card.addresses"
-      :languages="card.languages"
-      :eligibility="card.eligibility"
-      :cost="card.cost"
-      :link="card.link"
-    />
+  <div class="flex flex-auto flex-col p-5 pt-1">
+    <TransitionRoot
+      :show="isLoading"
+      enter="transition-opacity duration-75"
+      enter-from="opacity-0"
+      enter-to="opacity-100"
+      leave="transition-opacity duration-300"
+      leave-from="opacity-100"
+      leave-to="opacity-0"
+      class="relative w-full z-5 bg-white"
+    >
+      <ResourceSkeleton />
+      <ResourceSkeleton />
+      <ResourceSkeleton />
+    </TransitionRoot>
+    <div v-if="isLoading"></div>
+    <div v-else-if="resources.length > 0">
+      <ResourceCard
+        v-for="card in resources"
+        :key="card.title"
+        :id="card.id"
+        :title="card.title"
+        :description="card.description"
+        :demographics="card.demographics"
+        :phoneNumbers="card.phoneNumbers"
+        :emails="card.emails"
+        :addresses="card.addresses"
+        :languages="card.languages"
+        :eligibility="card.eligibility"
+        :cost="card.cost"
+        :link="card.link"
+      />
+    </div>
+    <p v-else class="text-2xl font-semibold">No results</p>
+    <p v-if="error">{{ error }}</p>
   </div>
-  <p v-else>No resources found or select a categories</p>
-  <p v-if="error">{{ error }}</p>
 </template>

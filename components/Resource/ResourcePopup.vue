@@ -81,10 +81,7 @@ async function submit() {
 const isOpen = ref(false);
 const openModal = () => (isOpen.value = true);
 const closeModal = () => (isOpen.value = false);
-defineExpose({
-  openModal,
-  closeModal,
-});
+defineExpose({ openModal, closeModal });
 </script>
 <template>
   <TransitionRoot appear :show="isOpen" as="template">

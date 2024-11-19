@@ -12,7 +12,6 @@ async function fetchResourcesByID(id: number): Promise<ResourceDB[]> {
       throw new Error(`Error fetching resource: ${response.statusText}`);
     }
     const resources: ResourceDB[] = await response.json();
-    console.log(resources);
     return resources;
   } catch (error) {
     console.error(error);
