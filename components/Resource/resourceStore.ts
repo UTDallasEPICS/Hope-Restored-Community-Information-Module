@@ -18,13 +18,22 @@ const filteredResources = ref<ResourceDB[]>([]);
 const isLoading = ref(false);
 const error = ref(null);
 
+const totalPage = ref(0);
+const currentPage = ref(1);
+const PAGE_SIZE = 10;
+
 export function useResourceStore() {
   const getResourceProps = computed(() =>
-    filteredResources.value.map(toResourceProps)
+    filteredResources.value
+      .slice((currentPage.value - 1) * PAGE_SIZE, currentPage.value * PAGE_SIZE)
+      .map(toResourceProps)
   );
   const getResources = computed(() => resources.value);
   const getIsLoading = computed(() => isLoading.value);
   const getError = computed(() => error.value);
+  const getTotalPages = computed(() => totalPage.value);
+  const getCurrentPage = computed(() => currentPage.value);
+  const getPageSize = computed(() => PAGE_SIZE);
 
   async function loadResourcesByCategory(category: string) {
     isLoading.value = true;
@@ -32,7 +41,11 @@ export function useResourceStore() {
     try {
       const response = await ResourceService.fetchResourcesByCategory(category);
       resources.value = response;
-      filterResource(filterStore.getFilterGroups.value);
+      filteredResources.value = filterResource(
+        filterStore.getFilterGroups.value
+      );
+      totalPage.value = Math.ceil(filteredResources.value.length / PAGE_SIZE);
+      currentPage.value = 1;
     } catch (err: any) {
       error.value = err.message;
       resources.value = [];
@@ -49,13 +62,21 @@ export function useResourceStore() {
         searchTerm
       );
       resources.value = response;
-      filterResource(filterStore.getFilterGroups.value);
+      filteredResources.value = filterResource(
+        filterStore.getFilterGroups.value
+      );
+      totalPage.value = Math.ceil(filteredResources.value.length / PAGE_SIZE);
+      currentPage.value = 1;
     } catch (err: any) {
       error.value = err.message;
       resources.value = [];
     } finally {
       isLoading.value = false;
     }
+  }
+
+  function setCurrentPage(page: number) {
+    currentPage.value = page;
   }
 
   function setResources(newResources: ResourceDB[]) {
@@ -73,17 +94,23 @@ export function useResourceStore() {
     getResources,
     getIsLoading,
     getError,
+    getTotalPages,
+    getCurrentPage,
+    getPageSize,
     setResources,
     loadResourcesByCategory,
     loadResourcesBySearchTerm,
     clearResources,
+    setCurrentPage,
   };
 }
 
 watch(
   () => filterStore.getFilterGroups.value,
   (newFilterGroups) => {
-    filterResource(newFilterGroups);
+    filteredResources.value = filterResource(newFilterGroups);
+    totalPage.value = Math.ceil(filteredResources.value.length / PAGE_SIZE);
+    currentPage.value = 1;
   },
   { deep: true }
 );
@@ -113,7 +140,7 @@ function filterResource(filterGroups: FilterGroup[]) {
       });
     });
   });
-  filteredResources.value = filtered;
+  return filtered;
 }
 
 function toResourceProps(resource: ResourceDB): ResourceProps {
@@ -131,5 +158,6 @@ function toResourceProps(resource: ResourceDB): ResourceProps {
     emails: resource.emails.map((email) => emailToString(email)),
     eligibility: resource.eligibility,
     cost: resource.cost === 0 ? "Free" : "$" + resource.cost,
+    index: -1, // index is set in ResourceCard.vue
   };
 }

@@ -8,6 +8,7 @@ import {
 } from "@heroicons/vue/24/solid";
 import ResourceTag from "./ResourceTag.vue";
 export interface ResourceInfoProps {
+  index: number;
   title: string;
   description: string;
   languages: string[];
@@ -21,7 +22,7 @@ defineProps<ResourceInfoProps>();
 <template>
   <div class="flex flex-auto flex-row justify-start">
     <div class="flex flex-auto flex-col">
-      <h2>{{ title }}</h2>
+      <h2 class="text-hrm-dark-green">{{ index }}. {{ title }}</h2>
       <p>{{ description }}</p>
       <div class="flex flex-auto flex-col justify-start">
         <ResourceTag

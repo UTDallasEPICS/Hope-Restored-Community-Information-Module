@@ -6,7 +6,7 @@ import PublicLandingModal from "../components/PublicLandingModal.vue";
 </script>
 
 <template>
-  <div>
+  <div id="scroll-to-top-anchor">
     <PublicLandingModal />
     <NavBar />
     <div class="flex flex-row flex-auto">

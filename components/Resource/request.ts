@@ -46,7 +46,11 @@ async function fetchResourcesBySearchTerm(
   searchTerm: string
 ): Promise<ResourceDB[]> {
   try {
-    const query = new URLSearchParams({ search: searchTerm });
+    const query = new URLSearchParams({
+      search: searchTerm,
+      sortByField: "relevance",
+      sortOrder: "desc",
+    });
 
     const response: Response = await fetch(
       `${
