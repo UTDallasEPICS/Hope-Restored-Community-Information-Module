@@ -15,8 +15,8 @@ const emit = defineEmits(["actionClicked"]);
     @click="$emit('actionClicked', title)"
     :class="
       props.isClicked
-        ? 'bg-black-neutral text-white-neutral'
-        : 'bg-white text-black-neutral'
+        ? 'bg-black-neutral text-white-neutral hover:shadow-md'
+        : 'bg-white text-black-neutral hover:shadow-md'
     "
   >
     <component :is="icon" class="flex-1 w-4 h-4" />

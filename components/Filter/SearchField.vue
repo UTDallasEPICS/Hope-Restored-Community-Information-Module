@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { MagnifyingGlassCircleIcon } from "@heroicons/vue/24/solid";
-import { defineEmits, ref } from "vue";
+import { defineEmits, ref, watch } from "vue";
 import { useResourceStore } from "../Resource/resourceStore";
 import { useCategoryStore } from "../Category/categoryStore";
 import { useSearchStore } from "./searchStore";
@@ -14,8 +14,15 @@ const searchResources = async () => {
   categoryStore.clearSelectedCategory();
 };
 const emit = defineEmits(["searchResources"]);
-const search = searchStore.getSearchTerm;
+const search = ref("");
 const location = ref("");
+
+watch(
+  () => searchStore.getSearchTerm.value,
+  (value) => {
+    search.value = value;
+  }
+);
 </script>
 
 <template>

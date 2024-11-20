@@ -8,7 +8,7 @@
     @apply font-Roboto;
   }
   h2 {
-    @apply text-4xl font-bold;
+    @apply text-2xl font-bold;
   }
   p {
     @apply text-base;

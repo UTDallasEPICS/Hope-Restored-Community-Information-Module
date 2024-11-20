@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineProps } from "vue";
+import { defineProps, ref } from "vue";
 import { default as ResourcePopup } from "./ResourcePopup.vue";
 import { default as ResourceInfo } from "./ResourceInfo.vue";
 import { default as ResourceNextStep } from "./ResourceNextStep.vue";
@@ -10,9 +10,10 @@ import {
   MapPinIcon,
   PhoneIcon,
 } from "@heroicons/vue/24/solid";
-import { ref } from "vue";
+import { compareURLs } from "../../utils/originChecker";
 export interface ResourceProps {
   id: number;
+  index: number;
   title: string;
   description: string;
   eligibility: string;
@@ -58,6 +59,12 @@ function onActionUnclicked(title: string) {
 function onPopupClose() {
   resourceActionBarRef.value.onActionBarClicked("");
 }
+
+const isPublicView = compareURLs(
+  window.location.href,
+  import.meta.env.VITE_EXTERNAL_VIEWER_URL
+  // Ignore the red squiggly line. This is a valid import statement.
+);
 </script>
 
 <template>
@@ -71,6 +78,7 @@ function onPopupClose() {
   >
     <div class="flex flex-auto flex-col justify-between">
       <ResourceInfo
+        :index="props.index"
         :title="title"
         :description="description"
         :languages="languages"
@@ -78,7 +86,7 @@ function onPopupClose() {
         :eligibility="eligibility"
         :cost="cost"
       />
-      <div class="flex items-center flex-row gap-x-2">
+      <div class="flex items-center flex-row gap-x-2 pt-2">
         <button
           class="flex flex-row items-center bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
         >
@@ -86,7 +94,11 @@ function onPopupClose() {
         </button>
         <ResourceActionBar
           ref="resourceActionBarRef"
-          :resource-actions="[ACTIONS.SHARE, ACTIONS.SUGGEST, ACTIONS.EDIT]"
+          :resource-actions="
+            isPublicView
+              ? [ACTIONS.SHARE, ACTIONS.SUGGEST]
+              : [ACTIONS.SHARE, ACTIONS.SUGGEST, ACTIONS.EDIT]
+          "
           @actionClicked="onActionClicked($event)"
           @actionUnclicked="onActionUnclicked($event)"
         />
@@ -94,7 +106,7 @@ function onPopupClose() {
     </div>
     <div class="flex w-2 bg-black-neutral my-2 rounded"></div>
     <div class="flex flex-none w-[20rem] flex-col justify-between px-4">
-      <div class="flex flex-col gap-y-4 justify-start pb-4">
+      <div class="flex flex-col gap-y-2 justify-start pt-1 pb-4">
         <ResourceNextStep
           v-if="phoneNumbers.length > 0"
           :icon="PhoneIcon"
@@ -121,7 +133,7 @@ function onPopupClose() {
           :href="link"
           target="_blank"
           rel="noopener"
-          class="flex flex-row items-center gap-x-4"
+          class="flex flex-row justify-center items-center gap-x-4"
         >
           <span class="uppercase">Apply on their website</span>
           <ArrowTopRightOnSquareIcon class="w-4 h-4" />

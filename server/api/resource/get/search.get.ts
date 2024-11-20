@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
   const skip = query.skip ? parseInt(query.skip as string) : undefined;
   const take = query.take ? parseInt(query.take as string) : undefined;
-  const sortByField = (query.sortByField as string) || "name";
+  const sortByField = (query.sortByField as string).toLowerCase() || "name";
   if (
     !["createdAt", "updatedAt", "name", "cost", "relevance"].includes(
       sortByField
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
       message: "Invalid sortByField",
     });
   }
-  const sortOrder = (query.sortByField as string) || "asc";
+  const sortOrder = (query.sortOrder as string).toLowerCase() || "asc";
   if (!["asc", "desc"].includes(sortOrder)) {
     throw createError({
       statusCode: 400,
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
       order: sortOrder,
     });
 
-    if (!resources || resources.length === 0) {
+    if (!resources) {
       throw createError({
         statusCode: 404,
         message: "Resources not found",

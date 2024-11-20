@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import ResourceCard from "./ResourceCard.vue";
+import ResourceIndicator from "./ResourceIndicator.vue";
 import ResourceSkeleton from "./ResourceSkeleton.vue";
+import ResourcePagination from "./ResourcePagination.vue";
 import { useResourceStore } from "./resourceStore";
 import { TransitionRoot } from "@headlessui/vue";
 
@@ -8,10 +10,17 @@ const resourceStore = useResourceStore();
 const resources = resourceStore.getResourceProps;
 const isLoading = resourceStore.getIsLoading;
 const error = resourceStore.getError;
+
+const getIndex = (index: number) => {
+  const currentPage = resourceStore.getCurrentPage.value;
+  const pageSize = resourceStore.getPageSize.value;
+  return (currentPage - 1) * pageSize + index + 1;
+};
 </script>
 
 <template>
   <div class="flex flex-auto flex-col p-5 pt-1">
+    <ResourceIndicator />
     <TransitionRoot
       :show="isLoading"
       enter="transition-opacity duration-75"
@@ -29,9 +38,10 @@ const error = resourceStore.getError;
     <div v-if="isLoading"></div>
     <div v-else-if="resources.length > 0">
       <ResourceCard
-        v-for="card in resources"
+        v-for="(card, index) in resources"
         :key="card.title"
         :id="card.id"
+        :index="getIndex(index)"
         :title="card.title"
         :description="card.description"
         :demographics="card.demographics"
@@ -44,7 +54,21 @@ const error = resourceStore.getError;
         :link="card.link"
       />
     </div>
-    <p v-else class="text-2xl font-semibold">No results</p>
-    <p v-if="error">{{ error }}</p>
+    <p v-else class="p-4 text-2xl font-semibold">
+      No results found.
+      <span class="block mt-2 text-base font-normal text-gray-600">
+        You can try the following:
+      </span>
+      <ul class="mt-2 list-disc list-inside text-base font-normal text-gray-600">
+        <li>Check the spelling or try alternate spellings.</li>
+        <li>Try a more general search.</li>
+        <li>Adjust your filters to broaden the results.</li>
+      </ul>
+    </p>
+    <p v-if="error" class="p-4">{{ error }}</p>
+    <ResourcePagination
+      v-if="resourceStore.getTotalPages.value > 1"
+      class="mt-2"
+    />
   </div>
 </template>
