@@ -85,7 +85,7 @@ defineExpose({ openModal, closeModal });
 </script>
 <template>
   <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" class="relative z-10">
+    <Dialog as="div" class="relative z-10 y-20">
       <div class="fixed inset-0 overflow-y-auto">
         <div
           class="flex min-h-full items-center justify-center p-4 text-center"
@@ -108,65 +108,69 @@ defineExpose({ openModal, closeModal });
               >
                 Edit Resources
               </DialogTitle>
-              <div class="mt-2">
+              <div>
                 <div v-if="!resources">No resource found.</div>
                 <div v-else class="max-h-[70vh] overflow-y-auto">
                   <form>
-                    <div>
-                      <label for="name">Name:</label>
-                      <input type="text" id="name" v-model="resources.name" />
+                    <div class="my-4 grid grid-flow-row" >
+                      <label for="name" >Name:</label>
+                      <input type="text" id="name" v-model="resources.name" class="border border-2 rounded bg-gray-100" />
                     </div>
 
-                    <div>
+                    <div class="my-4 grid grid-flow-row">
                       <label for="description">Description:</label>
                       <textarea
                         id="description"
                         v-model="resources.description"
-                        class="w-full h-32 p-2 border border-gray-300 rounded-md"
+                        class="w-full h-32 p-2 border border-2 rounded bg-gray-100"
                         placeholder="Enter description"
                       ></textarea>
                     </div>
 
-                    <div>
+                    <div class="my-4 grid grid-flow-row">
                       <label for="eligibility">Eligibility:</label>
                       <input
                         type="text"
                         id="eligibility"
                         v-model="resources.eligibility"
+                        class="border border-2 rounded bg-gray-100"
                       />
                     </div>
 
-                    <div>
+                    <div class="my-4 grid grid-flow-row">
                       <label for="cost">Cost:</label>
-                      <input type="number" id="cost" v-model="resources.cost" />
+                      <input type="number" id="cost" v-model="resources.cost" class="border border-2 rounded bg-gray-100" />
                     </div>
 
-                    <div>
+                    <div class="my-4 grid grid-flow-row">
                       <label for="externalLink">External Link:</label>
                       <input
                         type="url"
                         id="externalLink"
                         v-model="resources.externalLink"
+                        class="border border-2 rounded bg-gray-100"
                       />
                     </div>
 
                     <!-- Demographics (List) -->
-                    <div>
+                    <div class="my-4 grid grid-flow-row border border-1 rounded">
                       <label for="demographics">Demographics:</label>
                       <div
                         v-for="(demographic, index) in resources.demographics"
                         :key="index"
+                        
                       >
                         <input
                           type="text"
                           v-model="demographic.name"
                           placeholder="Demographic Name"
+                          class="border border-2 rounded bg-gray-100 my-1"
                         />
                       </div>
                     </div>
 
                     <!-- Languages (List) -->
-                    <div>
+                    <div class="my-4 grid grid-flow-row border border-1 rounded">
                       <label for="languages">Languages:</label>
                       <div
                         v-for="(language, index) in resources.languages"
@@ -176,12 +180,13 @@ defineExpose({ openModal, closeModal });
                           type="text"
                           v-model="language.name"
                           placeholder="Language Name"
+                          class="border border-2 rounded bg-gray-100 my-1"
                         />
                       </div>
                     </div>
 
                     <!-- Locations (List) -->
-                    <div>
+                    <div class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded">
                       <label for="locations">Locations:</label>
                       <div
                         v-for="(location, index) in resources.locations"
@@ -191,37 +196,43 @@ defineExpose({ openModal, closeModal });
                           type="text"
                           v-model="location.addressLine1"
                           placeholder="Address Line 1"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
                         />
                         <input
                           type="text"
                           v-model="location.addressLine2"
                           placeholder="Address Line 2"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
                         />
                         <input
                           type="text"
                           v-model="location.city"
                           placeholder="City"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
                         />
                         <input
                           type="text"
                           v-model="location.state"
                           placeholder="State"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
                         />
                         <input
                           type="text"
                           v-model="location.postalCode"
                           placeholder="Postal Code"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
                         />
                         <input
                           type="text"
                           v-model="location.country"
                           placeholder="Country"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
                         />
                       </div>
                     </div>
 
                     <!-- Phone Numbers (List) -->
-                    <div>
+                    <div class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded">
                       <label for="phoneNumbers">Phone Numbers:</label>
                       <div
                         v-for="(phoneNumber, index) in resources.phoneNumbers"
@@ -231,12 +242,13 @@ defineExpose({ openModal, closeModal });
                           type="text"
                           v-model="phoneNumber.number"
                           placeholder="Phone Number"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
                         />
                       </div>
                     </div>
 
                     <!-- Emails (List) -->
-                    <div>
+                    <div class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded">
                       <label for="emails">Emails:</label>
                       <div
                         v-for="(email, index) in resources.emails"
@@ -246,6 +258,7 @@ defineExpose({ openModal, closeModal });
                           type="email"
                           v-model="email.email"
                           placeholder="Email Address"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
                         />
                       </div>
                     </div>
