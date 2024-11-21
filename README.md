@@ -38,7 +38,7 @@ npm install
 3. Run the following command to set up docker container
 
 ```bash
-docker compose -f "docker-compose.yml" up -d --build
+docker compose up
 ```
 
 4. Run the following command to set up prisma
@@ -61,3 +61,21 @@ npm run dev
 # Serve with hot reload at localhost:4000 for the user frontend
 npm run dev-vue
 ```
+## Tech Stack
+    Front-End: Vue
+    Back-End: Nuxt.js
+    Database: PostgreSQL
+    Other Packages: Prisma
+    Recommended Tools to use: Postman or any other API testing platform
+## Deployment notes
+    Not deployed yet
+
+## Instructions for setting up the development environment
+    Initilize database: npx prisma migrate reset
+    Get docker up: docker compose up
+    There is not authentication yet
+    Third: npm run dev
+
+    
+    
+

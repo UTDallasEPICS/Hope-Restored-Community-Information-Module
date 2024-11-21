@@ -53,7 +53,8 @@ async function submit() {
   if (resources.value) {
     try {
       // Send PUT Request
-      const response = await fetch(`/api/resource/update/${props.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resource/update/${props.id}`, {
+        // ignore the error under .env it works fine regardless
         method: "PUT",
         body: JSON.stringify(resources.value),
         headers: {

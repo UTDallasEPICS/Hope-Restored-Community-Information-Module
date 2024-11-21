@@ -106,7 +106,10 @@ const isPublicView = compareURLs(
     </div>
     <div class="flex w-2 bg-black-neutral my-2 rounded"></div>
     <div class="flex flex-none w-[20rem] flex-col justify-between px-4">
-      <div class="flex flex-col gap-y-2 justify-start pt-1 pb-4">
+      <div
+        class="flex flex-col gap-y-2 justify-start pt-1 pb-4"
+        v-if="isPublicView"
+      >
         <ResourceNextStep
           v-if="phoneNumbers.length > 0"
           :icon="PhoneIcon"
@@ -126,19 +129,21 @@ const isPublicView = compareURLs(
           :items="addresses"
         />
       </div>
-      <button
-        class="initial bg-hrm-dark-green hover:bg-hrm-green text-white-neutral font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-      >
-        <a
-          :href="link"
-          target="_blank"
-          rel="noopener"
-          class="flex flex-row justify-center items-center gap-x-4"
+      <div v-if="isPublicView">
+        <button
+          class="initial bg-hrm-dark-green hover:bg-hrm-green text-white-neutral font-semibold py-2 px-4 border border-gray-400 rounded shadow"
         >
-          <span class="uppercase">Apply on their website</span>
-          <ArrowTopRightOnSquareIcon class="w-4 h-4" />
-        </a>
-      </button>
+          <a
+            :href="link"
+            target="_blank"
+            rel="noopener"
+            class="flex flex-row justify-center items-center gap-x-4"
+          >
+            <span class="uppercase">Apply on their website</span>
+            <ArrowTopRightOnSquareIcon class="w-4 h-4" />
+          </a>
+        </button>
+      </div>
     </div>
   </div>
 </template>
