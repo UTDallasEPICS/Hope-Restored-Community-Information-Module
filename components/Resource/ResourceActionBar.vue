@@ -5,6 +5,7 @@ import {
   ShareIcon,
   PencilSquareIcon,
   PlusIcon
+  TrashIcon,
 } from "@heroicons/vue/24/solid";
 import ResourceAction from "./ResourceAction.vue";
 export interface ResourceActionBarProps {
@@ -68,6 +69,10 @@ export const ACTIONS = {
   CREATE:{
     title: "Create",
     icon: PlusIcon
+  },
+  DELETE: {
+    title: "Delete",
+    icon: TrashIcon,
   }
 };
 </script>

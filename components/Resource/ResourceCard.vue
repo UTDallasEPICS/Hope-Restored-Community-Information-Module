@@ -106,11 +106,12 @@ const isPublicView = compareURLs(
           :resource-actions="
             isPublicView
               ? [ACTIONS.SHARE, ACTIONS.SUGGEST]
-              : [ACTIONS.SHARE, ACTIONS.SUGGEST, ACTIONS.EDIT]
+              : [ACTIONS.SHARE, ACTIONS.SUGGEST, ACTIONS.EDIT, ACTIONS.DELETE]
           "
           @actionClicked="onActionClicked($event)"
           @actionUnclicked="onActionUnclicked($event)"
         />
+  
       </div>
     </div>
     <div class="flex w-2 bg-black-neutral my-2 rounded"></div>
