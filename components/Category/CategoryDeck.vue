@@ -2,6 +2,7 @@
 import { default as Category } from "./Category.vue";
 import { useResourceStore } from "../Resource/resourceStore";
 import { useCategoryStore } from "./categoryStore";
+import { useLoadingStore } from "../Loader/loadingStore";
 
 defineProps({
   itemSize: {
@@ -19,6 +20,9 @@ const categories = categoryStore.getFCategories;
 const error = categoryStore.getError;
 const isLoading = categoryStore.getIsLoading;
 const selectedCategory = categoryStore.getSelectedCategory;
+
+const loadingStore = useLoadingStore();
+loadingStore.registerLoading(isLoading);
 
 const resourceStore = useResourceStore();
 const setSelectedCategory = (category) => {
