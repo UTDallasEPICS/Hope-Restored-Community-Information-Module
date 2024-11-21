@@ -4,7 +4,7 @@ import {
   PencilIcon,
   ShareIcon,
   PencilSquareIcon,
-  PlusIcon
+  PlusIcon,
   TrashIcon,
 } from "@heroicons/vue/24/solid";
 import ResourceAction from "./ResourceAction.vue";
