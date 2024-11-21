@@ -48,7 +48,7 @@ onMounted(async () => {
 });
 
 async function submit() {
-  emit("closeModal");
+  closeModal()
   //console.log("bomboclat", resources.value);
   if (resources.value) {
     try {
@@ -275,7 +275,7 @@ defineExpose({ openModal, closeModal });
                   <button
                     type="button"
                     class="inline-flex mx-4 justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    @click="$emit('closeModal')"
+                    @click="closeModal()"
                   >
                     close
                   </button>

@@ -9,6 +9,7 @@ import {
   EnvelopeIcon,
   MapPinIcon,
   PhoneIcon,
+  PlusIcon
 } from "@heroicons/vue/24/solid";
 import { compareURLs } from "../../utils/originChecker";
 export interface ResourceProps {
@@ -40,10 +41,14 @@ function onActionClicked(title: string) {
     console.log("suggest");
   } else if (title === ACTIONS.EDIT.title) {
     resourcePopupRef.value.openModal();
+  } else if (title === ACTIONS.CREATE.title) {
+    console.log("create");
+    // Add any additional logic for the CREATE action here
   } else {
     console.log("Not a valid action to be clicked");
   }
 }
+
 function onActionUnclicked(title: string) {
   if (title === ACTIONS.SHARE.title) {
     console.log("unshare");
@@ -51,10 +56,14 @@ function onActionUnclicked(title: string) {
     console.log("unsuggest");
   } else if (title === ACTIONS.EDIT.title) {
     resourcePopupRef.value.closeModal();
+  } else if (title === ACTIONS.CREATE.title) {
+    console.log("uncreate");
+    // Add any additional logic for the CREATE action here
   } else {
     console.log("Not a valid action to be unclicked");
   }
 }
+
 
 function onPopupClose() {
   resourceActionBarRef.value.onActionBarClicked("");
@@ -143,6 +152,14 @@ const isPublicView = compareURLs(
             <ArrowTopRightOnSquareIcon class="w-4 h-4" />
           </a>
         </button>
+      </div>
+      <div v-if="!isPublicView">
+        <ResourceActionBar
+          ref="resourceActionBarRef"
+          :resource-actions="[ACTIONS.CREATE]"
+          @actionClicked="onActionClicked($event)"
+          @actionUnclicked="onActionUnclicked($event)"
+        />
       </div>
     </div>
   </div>
