@@ -33,6 +33,7 @@ const addresses = props.addresses || [];
 
 const resourcePopupRef = ref();
 const resourceActionBarRef = ref();
+const Mode = ref("")
 
 function onActionClicked(title: string) {
   if (title === ACTIONS.SHARE.title) {
@@ -41,8 +42,10 @@ function onActionClicked(title: string) {
     console.log("suggest");
   } else if (title === ACTIONS.EDIT.title) {
     resourcePopupRef.value.openModal();
+    Mode.value = "edit"
   } else if (title === ACTIONS.CREATE.title) {
-    console.log("create");
+    resourcePopupRef.value.openModal();
+    Mode.value = "create"
     // Add any additional logic for the CREATE action here
   } else {
     console.log("Not a valid action to be clicked");
@@ -79,7 +82,8 @@ const isPublicView = compareURLs(
 <template>
   <ResourcePopup
     ref="resourcePopupRef"
-    :id="props.id"
+    :mode="Mode"
+    :id="props.id || 0"
     @closeModal="onPopupClose()"
   />
   <div
