@@ -9,7 +9,7 @@ import {
   EnvelopeIcon,
   MapPinIcon,
   PhoneIcon,
-  PlusIcon
+  PlusIcon,
 } from "@heroicons/vue/24/solid";
 import { compareURLs } from "../../utils/originChecker";
 export interface ResourceProps {
@@ -33,7 +33,7 @@ const addresses = props.addresses || [];
 
 const resourcePopupRef = ref();
 const resourceActionBarRef = ref();
-const Mode = ref("")
+const Mode = ref("");
 
 function onActionClicked(title: string) {
   if (title === ACTIONS.SHARE.title) {
@@ -42,10 +42,10 @@ function onActionClicked(title: string) {
     console.log("suggest");
   } else if (title === ACTIONS.EDIT.title) {
     resourcePopupRef.value.openModal();
-    Mode.value = "edit"
+    Mode.value = "edit";
   } else if (title === ACTIONS.CREATE.title) {
     resourcePopupRef.value.openModal();
-    Mode.value = "create"
+    Mode.value = "create";
     // Add any additional logic for the CREATE action here
   } else {
     console.log("Not a valid action to be clicked");
@@ -67,13 +67,12 @@ function onActionUnclicked(title: string) {
   }
 }
 
-
 function onPopupClose() {
   resourceActionBarRef.value.onActionBarClicked("");
 }
 
 const isPublicView = compareURLs(
-  window.location.href,
+  window?.location.href,
   import.meta.env.VITE_EXTERNAL_VIEWER_URL
   // Ignore the red squiggly line. This is a valid import statement.
 );
@@ -115,7 +114,6 @@ const isPublicView = compareURLs(
           @actionClicked="onActionClicked($event)"
           @actionUnclicked="onActionUnclicked($event)"
         />
-  
       </div>
     </div>
     <div class="flex w-2 bg-black-neutral my-2 rounded"></div>
