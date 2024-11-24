@@ -1,8 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { FindOneResourceUseCase } from "~/server/usage/Resource/findOne";
 import { defineEventHandler, createError } from "h3";
-
-const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   const id = Number(event.context.params?.id);

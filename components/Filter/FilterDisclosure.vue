@@ -14,7 +14,7 @@
     </div>
     <transition
       enter-active-class="transition-all duration-500 overflow-hidden"
-      enter-from-class="transform scaley-y-95 opacity-0 max-h-0"
+      enter-from-class="transform scale-y-95 opacity-0 max-h-0"
       enter-to-class="transform scale-y-100 opacity-100 max-h-full"
       leave-active-class="transition-all duration-500 overflow-hidden"
       leave-from-class="transform scale-y-100 opacity-100 max-h-full"

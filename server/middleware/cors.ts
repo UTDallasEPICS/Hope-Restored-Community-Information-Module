@@ -4,10 +4,7 @@ import { defineEventHandler, setResponseHeaders } from "h3";
 // This allows the client to make requests to the server from a different origin
 // Like a frontend application hosted on a different domain (i.e. the public view)
 export default defineEventHandler((event) => {
-  const allowedOrigins = [
-    "http://localhost:4000",
-    `${import.meta.env.VITE_EXTERNAL_VIEWER_URL}`,
-  ];
+  const allowedOrigins = [`${import.meta.env.VITE_EXTERNAL_VIEWER_URL}`];
   const origin = event.node.req.headers.origin;
   if (origin && allowedOrigins.includes(origin)) {
     setResponseHeaders(event, {

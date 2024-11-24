@@ -1,11 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { type ResourceDB, RESOURCE_INCLUDE_ALL } from "../../db/constants";
-import { Prisma } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 const prisma = new PrismaClient();
-
-export type ResourceSearchInput = {
-  search?: string;
-};
 
 export type SortOption = {
   field: string;
@@ -14,12 +8,14 @@ export type SortOption = {
 
 export class SearchManyResourceUseCase {
   async execute(
-    filters: ResourceSearchInput,
+    search: string,
+    sortBy: SortOption = { field: "relevance", order: "desc" },
     skip?: number,
-    take?: number,
-    sortBy: SortOption = { field: "Name", order: "asc" }
-  ): Promise<ResourceDB[]> {
+    take?: number
+  ): Promise<{ id: number }[]> {
     const { field, order } = sortBy;
+    search = search.trim();
+    if (search) search = removeStopWords(search) || search;
     const queryRaw = Prisma.sql`SELECT id
         ${
           field === "relevance"
@@ -28,16 +24,8 @@ export class SearchManyResourceUseCase {
         }
         FROM resource
         ${
-          filters.search
-            ? // ? Prisma.sql`WHERE ${Prisma.join(
-              //     filters.search.split(" ").map((term: string) => {
-              //       return Prisma.sql`description @@@ ${term}`;
-              //     }),
-              //     " AND "
-              //   )}`
-              Prisma.sql`WHERE description @@@ ${removeStopWords(
-                filters.search
-              )}`
+          search
+            ? Prisma.sql`WHERE description @@@ ${search} OR name @@@ ${search}`
             : Prisma.empty
         }
         ORDER BY ${
@@ -48,26 +36,10 @@ export class SearchManyResourceUseCase {
               )}`
         }
         ${take ? Prisma.sql`LIMIT ${take}` : Prisma.empty}
-        ${skip ? Prisma.sql`OFFSET ${skip}` : Prisma.empty};`;
-    console.log(queryRaw);
+        ${skip ? Prisma.sql`OFFSET ${skip}` : Prisma.empty};
+        `;
     try {
-      const results: any = await prisma.$queryRaw(queryRaw);
-      const resources = await prisma.resource.findMany({
-        skip: skip ?? undefined,
-        take: take ?? undefined,
-        where: {
-          id: {
-            in: results.map((result: any) => result.id),
-          },
-        },
-        include: RESOURCE_INCLUDE_ALL,
-      });
-
-      const sortedResources = results.map((result: any) => {
-        return resources.find((resource: any) => resource.id === result.id);
-      });
-
-      return sortedResources;
+      return await prisma.$queryRaw(queryRaw);
     } catch (error) {
       console.log(error);
       throw error;

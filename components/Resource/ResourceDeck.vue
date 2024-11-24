@@ -3,6 +3,7 @@ import ResourceCard from "./ResourceCard.vue";
 import ResourceIndicator from "./ResourceIndicator.vue";
 import ResourceSkeleton from "./ResourceSkeleton.vue";
 import ResourcePagination from "./ResourcePagination.vue";
+import SorterListBox from "../Filter/SorterListBox.vue";
 import { useResourceStore } from "./resourceStore";
 import { TransitionRoot } from "@headlessui/vue";
 
@@ -20,7 +21,12 @@ const getIndex = (index: number) => {
 
 <template>
   <div class="flex flex-auto flex-col p-5 pt-1">
-    <ResourceIndicator />
+    <div
+      class="flex flex-row border-b-2 border-black-neutral justify-between items-center"
+    >
+      <ResourceIndicator />
+      <SorterListBox />
+    </div>
     <TransitionRoot
       :show="isLoading"
       enter="transition-opacity duration-75"
@@ -54,17 +60,19 @@ const getIndex = (index: number) => {
         :link="card.link"
       />
     </div>
-    <p v-else class="p-4 text-2xl font-semibold">
-      No results found.
+    <div v-else class="p-4 text-2xl font-semibold">
+      <p>No results found.</p>
       <span class="block mt-2 text-base font-normal text-gray-600">
         You can try the following:
       </span>
-      <ul class="mt-2 list-disc list-inside text-base font-normal text-gray-600">
+      <ul
+        class="mt-2 list-disc list-inside text-base font-normal text-gray-600"
+      >
         <li>Check the spelling or try alternate spellings.</li>
         <li>Try a more general search.</li>
         <li>Adjust your filters to broaden the results.</li>
       </ul>
-    </p>
+    </div>
     <p v-if="error" class="p-4">{{ error }}</p>
     <ResourcePagination
       v-if="resourceStore.getTotalPages.value > 1"
