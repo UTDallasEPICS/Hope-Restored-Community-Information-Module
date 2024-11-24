@@ -30,9 +30,6 @@ export class FindManyResourceUseCase {
   ): Promise<ResourceDB[]> {
     const whereClause = {
       archived: false,
-      name: filters.name,
-      // TODO: combine name and description into a single search field
-      // description: filters.search ? { search: filters.search } : undefined,
       group: filters.groupName ? { name: filters.groupName } : undefined,
       demographics: filters.demographics
         ? { some: { name: { in: filters.demographics } } }

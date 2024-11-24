@@ -20,6 +20,8 @@ export class SearchManyResourceUseCase {
     sortBy: SortOption = { field: "Name", order: "asc" }
   ): Promise<ResourceDB[]> {
     const { field, order } = sortBy;
+    let search = filters.search?.trim();
+    if (search) search = removeStopWords(search) || search;
     const queryRaw = Prisma.sql`SELECT id
         ${
           field === "relevance"
@@ -28,16 +30,8 @@ export class SearchManyResourceUseCase {
         }
         FROM resource
         ${
-          filters.search
-            ? // ? Prisma.sql`WHERE ${Prisma.join(
-              //     filters.search.split(" ").map((term: string) => {
-              //       return Prisma.sql`description @@@ ${term}`;
-              //     }),
-              //     " AND "
-              //   )}`
-              Prisma.sql`WHERE description @@@ ${removeStopWords(
-                filters.search
-              )}`
+          search
+            ? Prisma.sql`WHERE description @@@ ${search} OR name @@@ ${search}`
             : Prisma.empty
         }
         ORDER BY ${
@@ -56,6 +50,7 @@ export class SearchManyResourceUseCase {
         skip: skip ?? undefined,
         take: take ?? undefined,
         where: {
+          archived: false,
           id: {
             in: results.map((result: any) => result.id),
           },

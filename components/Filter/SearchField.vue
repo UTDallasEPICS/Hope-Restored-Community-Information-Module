@@ -18,6 +18,8 @@ const search = ref("");
 const location = ref("");
 
 watch(
+  // Used to sync between the search field of the Landing Modal
+  // and the search field of the Wordpress page
   () => searchStore.getSearchTerm.value,
   (value) => {
     search.value = value;
