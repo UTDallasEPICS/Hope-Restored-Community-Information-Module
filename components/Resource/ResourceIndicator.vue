@@ -18,7 +18,7 @@ const label = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center gap-2 p-4 border-b-2 border-black-neutral">
+  <div class="flex items-center gap-2 p-4">
     <h2 class="text-gray-700">
       {{ label.charAt(0).toUpperCase() + label.slice(1).toLowerCase() }}
     </h2>

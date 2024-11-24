@@ -7,27 +7,20 @@ import {
   phoneNumberToString,
   emailToString,
 } from "~/utils/stringAssembler";
-import {
-  useFilterStore,
-  type FilterGroup,
-  type FilterItem,
-} from "../Filter/filterStore";
+import { useFilterStore, type FilterGroup } from "../Filter/filterStore";
+
 const filterStore = useFilterStore();
 const resources = ref<ResourceDB[]>([]);
-const filteredResources = ref<ResourceDB[]>([]);
 const isLoading = ref(false);
 const error = ref(null);
-
+const currentFilters = ref<Record<string, string[] | string>>({});
+const currentSorter = ref<Record<string, string>>({});
 const totalPage = ref(0);
 const currentPage = ref(1);
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 export function useResourceStore() {
-  const getResourceProps = computed(() =>
-    filteredResources.value
-      .slice((currentPage.value - 1) * PAGE_SIZE, currentPage.value * PAGE_SIZE)
-      .map(toResourceProps)
-  );
+  const getResourceProps = computed(() => resources.value.map(toResourceProps));
   const getResources = computed(() => resources.value);
   const getIsLoading = computed(() => isLoading.value);
   const getError = computed(() => error.value);
@@ -36,47 +29,31 @@ export function useResourceStore() {
   const getPageSize = computed(() => PAGE_SIZE);
 
   async function loadResourcesByCategory(category: string) {
-    isLoading.value = true;
-    error.value = null;
-    try {
-      const response = await ResourceService.fetchResourcesByCategory(category);
-      resources.value = response;
-      filteredResources.value = filterResource(
-        filterStore.getFilterGroups.value
-      );
-      totalPage.value = Math.ceil(filteredResources.value.length / PAGE_SIZE);
-      currentPage.value = 1;
-    } catch (err: any) {
-      error.value = err.message;
-      resources.value = [];
-    } finally {
-      isLoading.value = false;
-    }
+    let filters: Record<string, string[] | string> = {};
+    filters = constructFilters(filterStore.getFilterGroups.value);
+    filters = { ...filters, groupName: category };
+    currentFilters.value = filters;
+    loadResources();
+    currentPage.value = 1;
   }
 
   async function loadResourcesBySearchTerm(searchTerm: string) {
-    isLoading.value = true;
-    error.value = null;
-    try {
-      const response = await ResourceService.fetchResourcesBySearchTerm(
-        searchTerm
-      );
-      resources.value = response;
-      filteredResources.value = filterResource(
-        filterStore.getFilterGroups.value
-      );
-      totalPage.value = Math.ceil(filteredResources.value.length / PAGE_SIZE);
-      currentPage.value = 1;
-    } catch (err: any) {
-      error.value = err.message;
-      resources.value = [];
-    } finally {
-      isLoading.value = false;
-    }
+    let filters: Record<string, string[] | string> = {};
+    filters = constructFilters(filterStore.getFilterGroups.value);
+    filters = { ...filters, search: searchTerm };
+    currentFilters.value = filters;
+    loadResources();
+    currentPage.value = 1;
+  }
+
+  async function setCurrentSorter(sorter: Record<string, string>) {
+    currentSorter.value = sorter;
+    loadResources();
   }
 
   function setCurrentPage(page: number) {
     currentPage.value = page;
+    loadResources();
   }
 
   function setResources(newResources: ResourceDB[]) {
@@ -102,45 +79,50 @@ export function useResourceStore() {
     loadResourcesBySearchTerm,
     clearResources,
     setCurrentPage,
+    setCurrentSorter,
   };
+}
+
+async function loadResources() {
+  isLoading.value = true;
+  error.value = null;
+  try {
+    const response = await ResourceService.fetchResources(
+      currentFilters.value,
+      (currentPage.value - 1) * PAGE_SIZE,
+      PAGE_SIZE,
+      currentSorter.value["field"] || "name",
+      currentSorter.value["order"] || "asc"
+    );
+    resources.value = response.resources;
+    totalPage.value = Math.ceil(response.count / PAGE_SIZE);
+  } catch (err: any) {
+    error.value = err.message;
+    resources.value = [];
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 watch(
   () => filterStore.getFilterGroups.value,
   (newFilterGroups) => {
-    filteredResources.value = filterResource(newFilterGroups);
-    totalPage.value = Math.ceil(filteredResources.value.length / PAGE_SIZE);
+    const filters = constructFilters(newFilterGroups);
+    currentFilters.value = { ...currentFilters.value, ...filters };
+    loadResources();
     currentPage.value = 1;
   },
   { deep: true }
 );
 
-function checkFilterItem(resource: ResourceDB, FilterItem: FilterItem) {
-  if (FilterItem.isChecked) {
-    if (FilterItem.label === "Free") {
-      return resource.cost === 0;
-    } else if (FilterItem.label === "Paid") {
-      return resource.cost !== 0;
-    } else {
-      return resource.languages
-        .map((language) => language.name)
-        .includes(FilterItem.label);
-    }
-  }
-}
-
-function filterResource(filterGroups: FilterGroup[]) {
-  const filtered = resources.value.filter((resource) => {
-    return filterGroups.every((group) => {
-      if (!group.items.some((item) => item.isChecked)) {
-        return true;
-      }
-      return group.items.some((item) => {
-        return checkFilterItem(resource, item);
-      });
-    });
+function constructFilters(filterGroups: FilterGroup[]) {
+  const filters: { [key: string]: string[] } = {};
+  filterGroups.forEach((filterGroup: FilterGroup) => {
+    filters[filterGroup.title.toLowerCase()] = filterGroup.items
+      .filter((item) => item.isChecked)
+      .map((item) => item.label);
   });
-  return filtered;
+  return filters;
 }
 
 function toResourceProps(resource: ResourceDB): ResourceProps {

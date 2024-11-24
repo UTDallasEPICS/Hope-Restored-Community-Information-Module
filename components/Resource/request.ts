@@ -1,6 +1,6 @@
 import { type ResourceDB } from "~/server/db/constants";
 
-async function fetchResourcesByID(id: number): Promise<ResourceDB[]> {
+async function fetchResourcesByID(id: number): Promise<ResourceDB> {
   try {
     const response: Response = await fetch(
       `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resource/get/${id}`,
@@ -11,20 +11,28 @@ async function fetchResourcesByID(id: number): Promise<ResourceDB[]> {
     if (response.status !== 200) {
       throw new Error(`Error fetching resource: ${response.statusText}`);
     }
-    const resources: ResourceDB[] = await response.json();
-    return resources;
+    return await response.json();
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
 
-async function fetchResourcesByCategory(
-  category: string
-): Promise<ResourceDB[]> {
+async function fetchResources(
+  filters: Record<string, string[] | string>,
+  skip: number,
+  take: number,
+  sortByField: string,
+  sortOrder: string
+): Promise<{ resources: ResourceDB[]; count: number }> {
   try {
-    const query = new URLSearchParams({ groupName: category });
-
+    const query = new URLSearchParams({
+      ...filters,
+      skip: skip.toString(),
+      take: take.toString(),
+      sortByField,
+      sortOrder,
+    });
     const response: Response = await fetch(
       `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resource/get/all?${query}`,
       {
@@ -34,37 +42,7 @@ async function fetchResourcesByCategory(
     if (response.status !== 200) {
       throw new Error(`Error fetching resources: ${response.statusText}`);
     }
-    const resources: ResourceDB[] = await response.json();
-    return resources;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-
-async function fetchResourcesBySearchTerm(
-  searchTerm: string
-): Promise<ResourceDB[]> {
-  try {
-    const query = new URLSearchParams({
-      search: searchTerm,
-      sortByField: "relevance",
-      sortOrder: "desc",
-    });
-
-    const response: Response = await fetch(
-      `${
-        import.meta.env.VITE_NUXT_ENV_API_URL
-      }/api/resource/get/search?${query}`,
-      {
-        method: "GET",
-      }
-    );
-    if (response.status !== 200) {
-      throw new Error(`Error fetching resources: ${response.statusText}`);
-    }
-    const resources: ResourceDB[] = await response.json();
-    return resources;
+    return await response.json();
   } catch (error) {
     console.error(error);
     throw error;
@@ -73,6 +51,5 @@ async function fetchResourcesBySearchTerm(
 
 export default {
   fetchResourcesByID,
-  fetchResourcesByCategory,
-  fetchResourcesBySearchTerm,
+  fetchResources,
 };

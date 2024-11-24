@@ -1,9 +1,5 @@
-// server/api/resource/create.post.ts
-import { PrismaClient } from "@prisma/client";
 import { CreateResourceUseCase } from "~/server/usage/Resource/create";
 import { defineEventHandler, readBody, createError } from "h3";
-
-const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   const data = await readBody(event);

@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { ArchiveResourceUseCase } from "~/server/usage/Resource/archive";
 import { defineEventHandler, createError } from "h3";
 
-const prisma = new PrismaClient();
 export default defineEventHandler(async (event) => {
   const id = Number(event.context.params?.id);
   if (isNaN(id)) {

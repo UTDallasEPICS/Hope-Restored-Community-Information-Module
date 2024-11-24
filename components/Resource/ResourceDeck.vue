@@ -3,6 +3,7 @@ import ResourceCard from "./ResourceCard.vue";
 import ResourceIndicator from "./ResourceIndicator.vue";
 import ResourceSkeleton from "./ResourceSkeleton.vue";
 import ResourcePagination from "./ResourcePagination.vue";
+import SorterListBox from "../Filter/SorterListBox.vue";
 import { useResourceStore } from "./resourceStore";
 import { TransitionRoot } from "@headlessui/vue";
 
@@ -20,7 +21,12 @@ const getIndex = (index: number) => {
 
 <template>
   <div class="flex flex-auto flex-col p-5 pt-1">
-    <ResourceIndicator />
+    <div
+      class="flex flex-row border-b-2 border-black-neutral justify-between items-center"
+    >
+      <ResourceIndicator />
+      <SorterListBox />
+    </div>
     <TransitionRoot
       :show="isLoading"
       enter="transition-opacity duration-75"

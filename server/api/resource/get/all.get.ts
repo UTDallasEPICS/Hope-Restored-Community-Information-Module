@@ -1,15 +1,15 @@
-import { PrismaClient } from "@prisma/client";
-import { FindManyResourceUseCase } from "~/server/usage/Resource/findMany";
+import {
+  FindManyResourceUseCase,
+  type ResourceFilterInput,
+  type ResourceSortOption,
+} from "~/server/usage/Resource/findMany";
 import { defineEventHandler, getQuery, createError } from "h3";
-
-const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
 
-  const filters = {
-    name: query.name as string,
-    description: query.description as string,
+  const filters: ResourceFilterInput = {
+    search: query.search as string,
     groupName: query.groupName as string,
     demographics: query.demographics
       ? (query.demographics as string).split(",")
@@ -17,43 +17,47 @@ export default defineEventHandler(async (event) => {
     languages: query.languages
       ? (query.languages as string).split(",")
       : undefined,
-    eligibility: query.eligibility as string,
-    cost: query.cost ? parseFloat(query.cost as string) : undefined,
-    search: query.search as string,
+    eligibility: query.eligibility
+      ? (query.eligibility as string).split(",")
+      : undefined,
+    cost: query.cost as ResourceFilterInput["cost"] | undefined,
   };
 
   const skip = query.skip ? parseInt(query.skip as string) : undefined;
   const take = query.take ? parseInt(query.take as string) : undefined;
-  const sortByField = (query.sortByField as string) || "name";
-  if (!["createdAt", "updatedAt", "name", "cost"].includes(sortByField)) {
+  const sortByField = query.sortByField as
+    | ResourceSortOption["field"]
+    | undefined;
+  const sortOrder = query.sortOrder as ResourceSortOption["order"] | undefined;
+  if (!sortByField)
     throw createError({
       statusCode: 400,
-      message: "Invalid sortByField",
+      message: "sortByField is required",
     });
-  }
-  const sortOrder = (query.sortByField as string) || "asc";
-  if (!["asc", "desc"].includes(sortOrder)) {
+  if (!sortOrder)
     throw createError({
       statusCode: 400,
-      message: "Invalid sortOrder",
+      message: "sortOrder is required",
     });
-  }
+  const sortBy: ResourceSortOption = { field: sortByField, order: sortOrder };
   const usage = new FindManyResourceUseCase();
 
   try {
-    const resources = await usage.execute(filters, skip, take, {
-      field: sortByField,
-      order: sortOrder,
-    });
+    const { resources, count } = await usage.execute(
+      filters,
+      sortBy,
+      skip,
+      take
+    );
 
-    if (!resources || resources.length === 0) {
+    if (!resources) {
       throw createError({
         statusCode: 404,
         message: "Resources not found",
       });
     }
 
-    return resources;
+    return { resources, count };
   } catch (error) {
     throw createError({
       statusCode: 500,
