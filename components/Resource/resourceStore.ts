@@ -141,5 +141,7 @@ function toResourceProps(resource: ResourceDB): ResourceProps {
     eligibility: resource.eligibility,
     cost: resource.cost === 0 ? "Free" : "$" + resource.cost,
     index: -1, // index is set in ResourceCard.vue
+    createdAt: new Date(resource.createdAt),
+    updatedAt: new Date(resource.updatedAt),
   };
 }

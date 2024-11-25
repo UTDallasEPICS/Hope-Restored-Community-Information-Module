@@ -25,7 +25,7 @@
                   <div class="flex flex-1 justify-center items-center">
                     <SearchField
                       @searchResources="closeModal"
-                      class="flex flex-none"
+                      class="flex flex-auto"
                     />
                   </div>
                 </div>

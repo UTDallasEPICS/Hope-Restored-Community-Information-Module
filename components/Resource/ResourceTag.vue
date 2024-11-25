@@ -18,10 +18,7 @@ defineProps<ResourceTagProps>();
     <ul class="flex flex-auto flex-row items-center text-hrm-green">
       <li v-for="(tag, index) in tags" :key="tag">
         <span v-if="index != 0">, </span>
-        <span
-          class="cursor-pointer underline"
-          :class="index == 0 ? 'capitalize' : 'lowercase'"
-        >
+        <span :class="index == 0 ? 'capitalize' : 'lowercase'">
           {{ tag }}
         </span>
       </li>
