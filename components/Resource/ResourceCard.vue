@@ -30,7 +30,7 @@ const props = defineProps<ResourceProps>();
 const phoneNumbers = props.phoneNumbers || [];
 const emails = props.emails || [];
 const addresses = props.addresses || [];
-
+const deleted = ref(false);
 const resourcePopupRef = ref();
 const resourceActionBarRef = ref();
 const Mode = ref("");
@@ -62,7 +62,11 @@ function onActionUnclicked(title: string) {
   } else if (title === ACTIONS.CREATE.title) {
     console.log("uncreate");
     // Add any additional logic for the CREATE action here
-  } else {
+    
+  } else if(title == ACTIONS.DELETE.title){
+    deleted.value = true;
+  }
+  else {
     console.log("Not a valid action to be unclicked");
   }
 }
@@ -79,6 +83,7 @@ const isPublicView = compareURLs(
 </script>
 
 <template>
+  <div v-if="!deleted">
   <ResourcePopup
     ref="resourcePopupRef"
     :mode="Mode"
@@ -166,4 +171,5 @@ const isPublicView = compareURLs(
       </div>
     </div>
   </div>
+</div>
 </template>
