@@ -26,7 +26,7 @@ const error = ref<string | null>(null);
 onMounted(async () => {
   console.log("onMounted executed");
   
-  if (props.id !== undefined) {
+  if (props.id !== undefined && props.id !== 0) {
     try {
       const fetchedResources: ResourceDB[] =
         await ResourceService.fetchResourcesByID(props.id);
