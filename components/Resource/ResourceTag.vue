@@ -15,7 +15,10 @@ defineProps<ResourceTagProps>();
       <component :is="icon" class="w-4 h-4" />
       <span>{{ category }}</span>
     </div>
-    <ul class="flex flex-auto flex-row items-center text-hrm-green">
+    <ul
+      v-if="tags.length > 0"
+      class="flex flex-auto flex-row items-center text-hrm-green"
+    >
       <li v-for="(tag, index) in tags" :key="tag">
         <span v-if="index != 0">, </span>
         <span :class="index == 0 ? 'capitalize' : 'lowercase'">
@@ -23,5 +26,8 @@ defineProps<ResourceTagProps>();
         </span>
       </li>
     </ul>
+    <span v-else class="flex flex-auto flex-row items-center text-hrm-green">
+      N/A
+    </span>
   </div>
 </template>
