@@ -3,10 +3,10 @@ import { defineEventHandler, readBody, createError } from "h3";
 
 export default defineEventHandler(async (event) => {
   const data = await readBody(event);
-  if (!data.name || !data.description) {
+  if (!data.name || !data.description || !data.groupName) {
     throw createError({
       statusCode: 400,
-      message: "Name and description are required",
+      message: "Name, description, and groupName are required",
     });
   }
   const usage = new CreateResourceUseCase();

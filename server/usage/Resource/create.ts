@@ -1,12 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import { type ResourceDB, RESOURCE_INCLUDE_ALL } from "../../db/constants";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: ["warn", "error"],
+});
 
 export type CreateResourceInput = {
   name: string;
   description: string;
-  groupName?: string;
+  groupName: string;
   demographics?: string[];
   languages?: string[];
   locations?: Address[];
@@ -78,30 +80,29 @@ export class CreateResourceUseCase {
 
     if (locations) {
       resourceData.locations = {
-        connectOrCreate: locations.map((address) => ({
-          where: { ...address },
-          create: { ...address },
-        })),
+        createMany: {
+          data: locations.map((address) => ({ ...address })),
+        },
       };
     }
 
     if (phoneNumbers) {
       resourceData.phoneNumbers = {
-        connectOrCreate: phoneNumbers.map((number) => ({
-          where: { number },
-          create: { number },
-        })),
+        createMany: {
+          data: phoneNumbers.map((phoneNumber) => ({ phoneNumber })),
+        },
       };
     }
 
     if (emails) {
       resourceData.emails = {
-        connectOrCreate: emails.map((email) => ({
-          where: { email },
-          create: { email },
-        })),
+        createMany: {
+          data: emails.map((email) => ({ email })),
+        },
       };
     }
+
+    console.log("resourceData", resourceData.emails.create);
 
     const resource = await prisma.resource.create({
       data: resourceData,
