@@ -23,11 +23,11 @@ model User {
 
 model Resource {
   id          Int      @id @default(autoincrement()) // Primary key with auto-increment
-  name        String
+  name        String   @unique
   description String
-  eligibility String   // this is the criteria for which a person can be elgible for this resource
+  eligibility String   @default("N/A")// this is the criteria for which a person can be elgible for this resource
   cost        Float    @default(0)
-  externalLink String  // A call to action link for the resource 
+  externalLink String?  // A call to action link for the resource 
   locations Location[] // Backward relation to Location (One-to-many relationship)
   demographics Demographic[] 
   phoneNumbers PhoneNumber[]

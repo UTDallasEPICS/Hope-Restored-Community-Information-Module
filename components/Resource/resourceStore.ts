@@ -130,7 +130,7 @@ function toResourceProps(resource: ResourceDB): ResourceProps {
     id: resource.id,
     title: resource.name,
     description: resource.description,
-    link: resource.externalLink,
+    link: resource.externalLink ? resource.externalLink : "",
     demographics: resource.demographics.map((demographic) => demographic.name),
     languages: resource.languages.map((language) => language.name),
     addresses: resource.locations.map((location) => locationToString(location)),

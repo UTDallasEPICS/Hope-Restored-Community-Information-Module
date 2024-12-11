@@ -150,7 +150,7 @@ const isPublicView = compareURLs(
             :items="addresses"
           />
         </div>
-        <div v-if="isPublicView">
+        <div v-if="isPublicView && link">
           <button
             class="initial bg-hrm-dark-green hover:bg-hrm-green text-white-neutral font-semibold py-2 px-4 border border-gray-400 rounded shadow"
           >
