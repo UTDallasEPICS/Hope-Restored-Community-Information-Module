@@ -5,8 +5,12 @@ import CategoryDeck from "./Category/CategoryDeck.vue";
 
 <template>
   <nav class="block w-full bg-black-neutral shadow-md sticky top-0 z-10 p-4">
-    <div class="container flex flex-wrap gap-x-10 flex-auto">
-      <p class="text-white-neutral">Insert Image</p>
+    <div class="flex flex-wrap gap-x-10 flex-auto">
+      <img
+        src="/HRM-Logo-350x-300x300.jpg"
+        alt="HRM Logo"
+        class="h-[7.5rem] w-auto self-center"
+      />
       <div class="flex flex-col flex-auto gap-y-4">
         <SearchField />
         <CategoryDeck />

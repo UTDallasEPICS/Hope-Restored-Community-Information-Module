@@ -32,7 +32,7 @@ const props = defineProps<ResourceProps>();
 const phoneNumbers = props.phoneNumbers || [];
 const emails = props.emails || [];
 const addresses = props.addresses || [];
-const deleted = ref(false);
+const deleted = ref(false); // TODO: contact backend to flip archieved flag
 const resourcePopupRef = ref();
 const resourceActionBarRef = ref();
 const Mode = ref("");
@@ -45,6 +45,10 @@ function onActionClicked(title: string) {
   } else if (title === ACTIONS.EDIT.title) {
     resourcePopupRef.value.openModal();
     Mode.value = "edit";
+  } else if (title === ACTIONS.CREATE.title) {
+    resourcePopupRef.value.openModal();
+    Mode.value = "create";
+    // Add any additional logic for the CREATE action here
   } else {
     console.log("Not a valid action to be clicked");
   }
@@ -59,6 +63,9 @@ function onActionUnclicked(title: string) {
     resourcePopupRef.value.closeModal();
   } else if (title == ACTIONS.DELETE.title) {
     deleted.value = true;
+  } else if (title === ACTIONS.CREATE.title) {
+    console.log("uncreate");
+    // Add any additional logic for the CREATE action here
   } else {
     console.log("Not a valid action to be unclicked");
   }
