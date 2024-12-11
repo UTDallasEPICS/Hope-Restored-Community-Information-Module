@@ -15,13 +15,15 @@ const props = defineProps({
   mode: String,
 });
 
-
-watch(() => props.mode, (newVal, oldVal) => {
-  console.log("mode changed from", oldVal, "to", newVal);
-});
+watch(
+  () => props.mode,
+  (newVal, oldVal) => {
+    console.log("mode changed from", oldVal, "to", newVal);
+  }
+);
 
 const emit = defineEmits(["closeModal"]);
-console.log(props.id, props.mode)
+console.log(props.id, props.mode);
 
 const resources = ref<ResourceDB | null>(null); // Store a single resource, default is null.
 const error = ref<string | null>(null);
@@ -142,8 +144,8 @@ async function submit() {
     }
   }
 }
+
 // functions for adding new phone numbers
-async function addPhoneNumber() {}
 
 async function createResource() {
   closeModal();
@@ -176,6 +178,7 @@ async function createResource() {
           },
         }
       );
+     // window.location.reload();
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -188,6 +191,19 @@ async function createResource() {
     }
   }
 }
+const addDemographic = () => cresources.value.demographics?.push({ name: "" });
+const addLanguage = () => cresources.value.languages?.push({ name: "" });
+const addLocation = () =>
+  cresources.value.locations?.push({
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+  });
+const addPhoneNumber = () => cresources.value.phoneNumbers?.push({ number: "" });
+const addEmails = () => cresources.value.emails?.push({ email: "" });
 
 const isOpen = ref(false);
 const openModal = () => (isOpen.value = true);
@@ -231,7 +247,6 @@ defineExpose({ openModal, closeModal });
                         id="name"
                         v-model="resources.name"
                         class="border border-2 rounded bg-gray-100"
-                        
                       />
                     </div>
 
@@ -437,6 +452,7 @@ defineExpose({ openModal, closeModal });
     </Dialog>
   </TransitionRoot>
 
+  <!-- this section is for the create input-->
   <div>
     <TransitionRoot
       appear
@@ -480,7 +496,7 @@ defineExpose({ openModal, closeModal });
                   Payment successful
                 </DialogTitle>
                 <div v-if="!cresources">No resource found.</div>
-                <div  v-else class="mt-2 max-h-[70vh] overflow-y-auto">
+                <div v-else class="mt-2 max-h-[70vh] overflow-y-auto">
                   <form>
                     <div class="my-4 grid grid-flow-row">
                       <label for="cname">Name:</label>
@@ -537,6 +553,158 @@ defineExpose({ openModal, closeModal });
                         v-model="cresources.externalLink"
                         class="border border-2 rounded bg-gray-100"
                       />
+                    </div>
+                    <!-- Demographics (List) -->
+                    <div
+                      class="my-4 grid grid-flow-row border border-1 rounded"
+                    >
+                      <label for="demographics">Demographics:</label>
+                      <div
+                        v-for="(demographic, index) in cresources.demographics"
+                        :key="index"
+                      >
+                        <input
+                          type="text"
+                          v-model="demographic.name"
+                          placeholder="Demographic Name"
+                          class="border border-2 rounded bg-gray-100 my-1"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        @click="addDemographic"
+                        class="mt-2 px-4 py-2 bg-blue-100 text-blue-900 rounded hover:bg-blue-200"
+                      >
+                        Add Demographic
+                      </button>
+                    </div>
+
+                    <div
+                      class="my-4 grid grid-flow-row border border-1 rounded"
+                    >
+                      <label for="languages">Languages:</label>
+                      <div
+                        v-for="(language, index) in cresources.languages"
+                        :key="index"
+                      >
+                        <input
+                          type="text"
+                          v-model="language.name"
+                          placeholder="Language Name"
+                          class="border border-2 rounded bg-gray-100 my-1"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        @click="addLanguage"
+                        class="mt-2 px-4 py-2 bg-blue-100 text-blue-900 rounded hover:bg-blue-200"
+                      >
+                        Add languages
+                      </button>
+                    </div>
+
+                    <!-- Locations (List) -->
+                    <div
+                      class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded"
+                    >
+                      <label for="locations">Locations:</label>
+                      <div
+                        v-for="(location, index) in cresources.locations"
+                        :key="index"
+                      >
+                        <input
+                          type="text"
+                          v-model="location.addressLine1"
+                          placeholder="Address Line 1"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
+                        />
+                        <input
+                          type="text"
+                          v-model="location.addressLine2"
+                          placeholder="Address Line 2"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
+                        />
+                        <input
+                          type="text"
+                          v-model="location.city"
+                          placeholder="City"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
+                        />
+                        <input
+                          type="text"
+                          v-model="location.state"
+                          placeholder="State"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
+                        />
+                        <input
+                          type="text"
+                          v-model="location.postalCode"
+                          placeholder="Postal Code"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
+                        />
+                        <input
+                          type="text"
+                          v-model="location.country"
+                          placeholder="Country"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        @click="addLocation"
+                        class="mt-2 px-4 py-2 bg-blue-100 text-blue-900 rounded hover:bg-blue-200"
+                      >
+                        Add Locations
+                      </button>
+                    </div>
+
+                    <div
+                      class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded"
+                    >
+                      <label for="phoneNumbers">Phone Numbers:</label>
+                      <div
+                        v-for="(phoneNumber, index) in cresources.phoneNumbers"
+                        :key="index"
+                      >
+                        <input
+                          type="text"
+                          v-model="phoneNumber.number"
+                          placeholder="Phone Number"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        @click="addPhoneNumber"
+                        class="mt-2 px-4 py-2 bg-blue-100 text-blue-900 rounded hover:bg-blue-200"
+                      >
+                        Add Phone Number
+                      </button>
+                    </div>
+
+                    <!-- Emails (List) -->
+                    <div
+                      class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded"
+                    >
+                      <label for="emails">Emails:</label>
+                      <div
+                        v-for="(email, index) in cresources.emails"
+                        :key="index"
+                      >
+                        <input
+                          type="email"
+                          v-model="email.email"
+                          placeholder="Email Address"
+                          class="border border-2 rounded bg-gray-100 my-1 mx-1"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        @click="addEmails"
+                        class="mt-2 px-4 py-2 bg-blue-100 text-blue-900 rounded hover:bg-blue-200"
+                      >
+                        Add Emails
+                      </button>
                     </div>
                   </form>
                 </div>
