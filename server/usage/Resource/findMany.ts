@@ -2,7 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import { type ResourceDB, RESOURCE_INCLUDE_ALL } from "../../db/constants";
 import { SearchManyResourceUseCase } from "./searchMany";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: ["warn", "error"],
+});
 export type ResourceFilterInput = {
   search?: string;
   groupName?: string;

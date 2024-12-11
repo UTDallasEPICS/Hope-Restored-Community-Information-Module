@@ -2,7 +2,9 @@
 import { PrismaClient } from "@prisma/client";
 import { type ResourceDB, RESOURCE_INCLUDE_ALL } from "../../db/constants";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: ["warn", "error"],
+});
 
 export type UpdateResourceInput = {
   id: number;
@@ -52,14 +54,7 @@ export class UpdateResourceUseCase {
       ...(cost && { cost }),
     };
 
-    if (emails) {
-      resourceData.emails = {
-        connectOrCreate: emails.map((email) => ({
-          where: { email },
-          create: { email },
-        })),
-      };
-    }
+    const disconnect: any = {};
 
     if (groupName) {
       resourceData.group = {
@@ -68,6 +63,7 @@ export class UpdateResourceUseCase {
           create: { name: groupName },
         },
       };
+      disconnect.group = { set: [] };
     }
 
     if (demographics) {
@@ -77,6 +73,7 @@ export class UpdateResourceUseCase {
           create: { name },
         })),
       };
+      disconnect.demographics = { set: [] };
     }
 
     if (languages) {
@@ -86,6 +83,20 @@ export class UpdateResourceUseCase {
           create: { name },
         })),
       };
+      disconnect.languages = { set: [] };
+    }
+
+    // For many-to-one, we decide to delete all existing records and create new ones nstead of disconnecting and connecting
+    // This is because we don't want to keep any old records that might not be connecting to new data that can clog up the database
+
+    if (emails) {
+      resourceData.emails = {
+        connectOrCreate: emails.map((email) => ({
+          where: { email },
+          create: { email },
+        })),
+      };
+      disconnect.emails = { deleteMany: {} };
     }
 
     if (locations) {
@@ -95,6 +106,7 @@ export class UpdateResourceUseCase {
           create: { ...address },
         })),
       };
+      disconnect.locations = { deleteMany: {} };
     }
 
     if (phoneNumbers) {
@@ -104,13 +116,20 @@ export class UpdateResourceUseCase {
           create: { number },
         })),
       };
+      disconnect.phoneNumbers = { deleteMany: {} };
     }
 
-    const resource = await prisma.resource.update({
-      where: { id },
-      data: resourceData,
-      include: RESOURCE_INCLUDE_ALL,
-    });
+    const [updateDisconnect, resource] = await prisma.$transaction([
+      prisma.resource.update({
+        where: { id },
+        data: disconnect,
+      }),
+      prisma.resource.update({
+        where: { id },
+        data: resourceData,
+        include: RESOURCE_INCLUDE_ALL,
+      }),
+    ]);
 
     return resource;
   }
