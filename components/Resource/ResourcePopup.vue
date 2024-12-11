@@ -9,17 +9,19 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/vue";
-
+import { watch } from "vue";
 const props = defineProps({
   id: Number,
   mode: String,
 });
 
+
+watch(() => props.mode, (newVal, oldVal) => {
+  console.log("mode changed from", oldVal, "to", newVal);
+});
+
 const emit = defineEmits(["closeModal"]);
-if (props.mode == "create") {
-  console.log(props.id);
-  console.log("gegewg");
-}
+console.log(props.id, props.mode)
 
 const resources = ref<ResourceDB | null>(null); // Store a single resource, default is null.
 const error = ref<string | null>(null);
@@ -50,9 +52,42 @@ onMounted(async () => {
       error.value = err.message;
       resources.value = null;
     }
-  } else {
-    console.log("create mode");
   }
+});
+
+interface CreateResourceInput {
+  name: string;
+  description: string;
+  externalLink?: string;
+  eligibility?: string;
+  cost?: number;
+  demographics?: { name: string }[];
+  languages?: { name: string }[];
+  locations?: {
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country?: string;
+  }[];
+  phoneNumbers?: { number: string }[];
+  emails?: { email: string }[];
+  groupName: string;
+}
+
+const cresources = ref<CreateResourceInput>({
+  name: "",
+  description: "",
+  externalLink: "",
+  eligibility: "",
+  cost: 0,
+  demographics: [],
+  languages: [],
+  locations: [],
+  phoneNumbers: [],
+  emails: [],
+  groupName: "",
 });
 
 async function submit() {
@@ -75,7 +110,6 @@ async function submit() {
           country: loc.country,
         })),
       };
-      console.log(JSON.stringify(payload, null, 2));
 
       // Send PUT Request
       const response = await fetch(
@@ -109,18 +143,57 @@ async function submit() {
   }
 }
 // functions for adding new phone numbers
-async function addPhoneNumber(){
+async function addPhoneNumber() {}
 
+async function createResource() {
+  closeModal();
+  if (cresources.value) {
+    try {
+      const payload = {
+        ...cresources.value,
+        demographics: cresources.value.demographics?.map((d) => d.name),
+        languages: cresources.value.languages?.map((l) => l.name),
+        phoneNumbers: cresources.value.phoneNumbers?.map((p) => p.number),
+        emails: cresources.value.emails?.map((e) => e.email),
+        locations: cresources.value.locations?.map((loc) => ({
+          addressLine1: loc.addressLine1,
+          addressLine2: loc.addressLine2,
+          city: loc.city,
+          state: loc.state,
+          postalCode: loc.postalCode,
+          country: loc.country,
+        })),
+      };
+      console.log(payload);
+      const response = await fetch(
+        `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resource/create`,
+        {
+          // ignore the error under .env it works fine regardless
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "application/json", // Inform the server about the payload format
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to create resource: ${response.status} - ${errorText}`
+        );
+      }
+    } catch (err: any) {
+      console.error("Error during resource creation:", err.message);
+    }
+  }
 }
-
 
 const isOpen = ref(false);
 const openModal = () => (isOpen.value = true);
 const closeModal = () => (isOpen.value = false);
 defineExpose({ openModal, closeModal });
 </script>
-
-
 
 <template>
   <TransitionRoot appear :show="isOpen" as="template" v-if="mode === 'edit'">
@@ -158,7 +231,7 @@ defineExpose({ openModal, closeModal });
                         id="name"
                         v-model="resources.name"
                         class="border border-2 rounded bg-gray-100"
-                        autofocus
+                        
                       />
                     </div>
 
@@ -170,6 +243,15 @@ defineExpose({ openModal, closeModal });
                         class="w-full h-32 p-2 border border-2 rounded bg-gray-100"
                         placeholder="Enter description"
                       ></textarea>
+                    </div>
+                    <div class="my-4 grid grid-flow-row">
+                      <label for="group">Group:</label>
+                      <input
+                        type="text"
+                        id="group"
+                        v-model="resources.group.name"
+                        class="border border-2 rounded bg-gray-100"
+                      />
                     </div>
 
                     <div class="my-4 grid grid-flow-row">
@@ -397,20 +479,82 @@ defineExpose({ openModal, closeModal });
                 >
                   Payment successful
                 </DialogTitle>
-                <div class="mt-2">
-                  <p class="text-sm text-gray-500">
-                    Your payment has been successfully submitted. We’ve sent you
-                    an email with all of the details of your order.
-                  </p>
+                <div v-if="!cresources">No resource found.</div>
+                <div  v-else class="mt-2 max-h-[70vh] overflow-y-auto">
+                  <form>
+                    <div class="my-4 grid grid-flow-row">
+                      <label for="cname">Name:</label>
+                      <input
+                        type="text"
+                        id="cname"
+                        v-model="cresources.name"
+                        class="border border-2 rounded bg-gray-100"
+                        autofocus
+                      />
+                    </div>
+                    <div class="my-4 grid grid-flow-row">
+                      <label for="description">Description:</label>
+                      <textarea
+                        id="description"
+                        v-model="cresources.description"
+                        class="w-full h-32 p-2 border border-2 rounded bg-gray-100"
+                        placeholder="Enter description"
+                      ></textarea>
+                    </div>
+                    <div class="my-4 grid grid-flow-row">
+                      <label for="group">Group:</label>
+                      <input
+                        type="text"
+                        id="group"
+                        v-model="cresources.groupName"
+                        class="border border-2 rounded bg-gray-100"
+                      />
+                    </div>
+                    <div class="my-4 grid grid-flow-row">
+                      <label for="eligibility">Eligibility:</label>
+                      <input
+                        type="text"
+                        id="eligibility"
+                        v-model="cresources.eligibility"
+                        class="border border-2 rounded bg-gray-100"
+                      />
+                    </div>
+                    <div class="my-4 grid grid-flow-row">
+                      <label for="cost">Cost:</label>
+                      <input
+                        type="number"
+                        id="cost"
+                        v-model="cresources.cost"
+                        class="border border-2 rounded bg-gray-100"
+                      />
+                    </div>
+
+                    <div class="my-4 grid grid-flow-row">
+                      <label for="externalLink">External Link:</label>
+                      <input
+                        type="url"
+                        id="externalLink"
+                        v-model="cresources.externalLink"
+                        class="border border-2 rounded bg-gray-100"
+                      />
+                    </div>
+                  </form>
                 </div>
 
                 <div class="mt-4">
                   <button
                     type="button"
                     class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    @click="closeModal"
+                    @click="createResource()"
                   >
-                    Got it, thanks!
+                    save
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex mx-4 justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    @click="closeModal()"
+                  >
+                    close
                   </button>
                 </div>
               </DialogPanel>
