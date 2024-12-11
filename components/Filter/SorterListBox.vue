@@ -84,7 +84,7 @@ import { useResourceStore } from "../Resource/resourceStore";
 const sortOptions = [
   { name: "From A-Z", field: "name", order: "asc" },
   { name: "From Z-A", field: "name", order: "desc" },
-  { name: "Relevance", field: "relevance", order: "asc" },
+  { name: "Relevance", field: "relevance", order: "desc" },
   { name: "Last Updated", field: "updatedAt", order: "desc" },
   { name: "Newly Created", field: "createdAt", order: "desc" },
 ];

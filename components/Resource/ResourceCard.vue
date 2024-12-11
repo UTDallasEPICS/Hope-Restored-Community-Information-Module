@@ -11,6 +11,7 @@ import {
   PhoneIcon,
 } from "@heroicons/vue/24/solid";
 import { compareURLs } from "../../utils/originChecker";
+import ResourceMoreDetail from "./ResourceMoreDetail.vue";
 export interface ResourceProps {
   id: number;
   index: number;
@@ -24,12 +25,14 @@ export interface ResourceProps {
   emails: string[];
   addresses: string[];
   link: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 const props = defineProps<ResourceProps>();
 const phoneNumbers = props.phoneNumbers || [];
 const emails = props.emails || [];
 const addresses = props.addresses || [];
-const deleted = ref(false);
+const deleted = ref(false); // TODO: contact backend to flip archieved flag
 const resourcePopupRef = ref();
 const resourceActionBarRef = ref();
 const Mode = ref("");
@@ -42,6 +45,10 @@ function onActionClicked(title: string) {
   } else if (title === ACTIONS.EDIT.title) {
     resourcePopupRef.value.openModal();
     Mode.value = "edit";
+  } else if (title === ACTIONS.CREATE.title) {
+    resourcePopupRef.value.openModal();
+    Mode.value = "create";
+    // Add any additional logic for the CREATE action here
   } else {
     console.log("Not a valid action to be clicked");
   }
@@ -56,6 +63,9 @@ function onActionUnclicked(title: string) {
     resourcePopupRef.value.closeModal();
   } else if (title == ACTIONS.DELETE.title) {
     deleted.value = true;
+  } else if (title === ACTIONS.CREATE.title) {
+    console.log("uncreate");
+    // Add any additional logic for the CREATE action here
   } else {
     console.log("Not a valid action to be unclicked");
   }
@@ -80,12 +90,17 @@ const isPublicView = compareURLs(
       :id="props.id || 0"
       @closeModal="onPopupClose()"
     />
+    <ResourceMoreDetail
+      ref="resourceMoreDetailRef"
+      v-if="isPublicView"
+      :resource="props"
+    />
     <div
       class="flex flex-none flex-row p-4 items-stretch border-b-2 border-black-neutral gap-y-10"
     >
       <div class="flex flex-auto flex-col justify-between">
         <ResourceInfo
-          :index="props.index"
+          :index="index"
           :title="title"
           :description="description"
           :languages="languages"
@@ -96,22 +111,21 @@ const isPublicView = compareURLs(
         <div class="flex items-center flex-row gap-x-2 pt-2">
           <button
             class="flex flex-row items-center bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
+            @click="$refs.resourceMoreDetailRef?.openModal()"
           >
             <span class="uppercase">View details</span>
           </button>
           <ResourceActionBar
             ref="resourceActionBarRef"
             :resource-actions="
-              isPublicView
-                ? [ACTIONS.SHARE, ACTIONS.SUGGEST]
-                : [ACTIONS.SHARE, ACTIONS.SUGGEST, ACTIONS.EDIT, ACTIONS.DELETE]
+              isPublicView ? [] : [ACTIONS.EDIT, ACTIONS.DELETE]
             "
             @actionClicked="onActionClicked($event)"
             @actionUnclicked="onActionUnclicked($event)"
           />
         </div>
       </div>
-      <div class="flex w-2 bg-black-neutral my-2 rounded"></div>
+      <div class="flex w-1 bg-black-neutral my-2 rounded"></div>
       <div class="flex flex-none w-[20rem] flex-col justify-between px-4">
         <div
           class="flex flex-col gap-y-2 justify-start pt-1 pb-4"
@@ -150,6 +164,14 @@ const isPublicView = compareURLs(
               <ArrowTopRightOnSquareIcon class="w-4 h-4" />
             </a>
           </button>
+        </div>
+        <div v-if="!isPublicView">
+          <ResourceActionBar
+            ref="resourceActionBarRef"
+            :resource-actions="[ACTIONS.CREATE]"
+            @actionClicked="onActionClicked($event)"
+            @actionUnclicked="onActionUnclicked($event)"
+          />
         </div>
       </div>
     </div>
