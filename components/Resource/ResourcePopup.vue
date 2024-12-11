@@ -12,20 +12,20 @@ import {
 
 const props = defineProps({
   id: Number,
-  mode: String
+  mode: String,
 });
 
 const emit = defineEmits(["closeModal"]);
-if(props.mode == "create"){
-    console.log(props.id)
-    console.log("gegewg")
-  }
+if (props.mode == "create") {
+  console.log(props.id);
+  console.log("gegewg");
+}
 
 const resources = ref<ResourceDB | null>(null); // Store a single resource, default is null.
 const error = ref<string | null>(null);
 onMounted(async () => {
   console.log("onMounted executed");
-  
+
   if (props.id !== undefined && props.id !== 0) {
     try {
       const fetchedResources: ResourceDB[] =
@@ -51,24 +51,46 @@ onMounted(async () => {
       resources.value = null;
     }
   } else {
-    console.log("create mode")
+    console.log("create mode");
   }
 });
 
 async function submit() {
-  closeModal()
+  closeModal();
   //console.log("bomboclat", resources.value);
   if (resources.value) {
     try {
+      const payload = {
+        ...resources.value,
+        demographics: resources.value.demographics?.map((d) => d.name),
+        languages: resources.value.languages?.map((l) => l.name),
+        phoneNumbers: resources.value.phoneNumbers?.map((p) => p.number),
+        emails: resources.value.emails?.map((e) => e.email),
+        locations: resources.value.locations?.map((loc) => ({
+          addressLine1: loc.addressLine1,
+          addressLine2: loc.addressLine2,
+          city: loc.city,
+          state: loc.state,
+          postalCode: loc.postalCode,
+          country: loc.country,
+        })),
+      };
+      console.log(JSON.stringify(payload, null, 2));
+
       // Send PUT Request
-      const response = await fetch(`${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resource/update/${props.id}`, {
-        // ignore the error under .env it works fine regardless
-        method: "PUT",
-        body: JSON.stringify(resources.value),
-        headers: {
-          "Content-Type": "application/json", // Inform the server about the payload format
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resource/update/${
+          props.id
+        }`,
+        {
+          // ignore the error under .env it works fine regardless
+          method: "PUT",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "application/json", // Inform the server about the payload format
+          },
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -79,19 +101,17 @@ async function submit() {
 
       const result = await response.json();
       console.log("Resource updated:", result);
-      console.error("Failed to update resource.");
+      window.location.reload();
     } catch (err: any) {
       // Handle any client-side or network errors
       console.error("Error during resource update:", err.message);
     }
   }
 }
-//const createOrEdit = ref(false)
-// edit mode is true 
-// create mode is false
+// functions for adding new phone numbers
+async function addPhoneNumber(){
 
-
-
+}
 
 
 const isOpen = ref(false);
@@ -99,6 +119,9 @@ const openModal = () => (isOpen.value = true);
 const closeModal = () => (isOpen.value = false);
 defineExpose({ openModal, closeModal });
 </script>
+
+
+
 <template>
   <TransitionRoot appear :show="isOpen" as="template" v-if="mode === 'edit'">
     <Dialog as="div" class="relative z-10 y-20">
@@ -128,9 +151,15 @@ defineExpose({ openModal, closeModal });
                 <div v-if="!resources">No resource found.</div>
                 <div v-else class="max-h-[70vh] overflow-y-auto">
                   <form>
-                    <div class="my-4 grid grid-flow-row" >
-                      <label for="name" >Name:</label>
-                      <input type="text" id="name" v-model="resources.name" class="border border-2 rounded bg-gray-100" autofocus />
+                    <div class="my-4 grid grid-flow-row">
+                      <label for="name">Name:</label>
+                      <input
+                        type="text"
+                        id="name"
+                        v-model="resources.name"
+                        class="border border-2 rounded bg-gray-100"
+                        autofocus
+                      />
                     </div>
 
                     <div class="my-4 grid grid-flow-row">
@@ -155,7 +184,12 @@ defineExpose({ openModal, closeModal });
 
                     <div class="my-4 grid grid-flow-row">
                       <label for="cost">Cost:</label>
-                      <input type="number" id="cost" v-model="resources.cost" class="border border-2 rounded bg-gray-100" />
+                      <input
+                        type="number"
+                        id="cost"
+                        v-model="resources.cost"
+                        class="border border-2 rounded bg-gray-100"
+                      />
                     </div>
 
                     <div class="my-4 grid grid-flow-row">
@@ -169,12 +203,13 @@ defineExpose({ openModal, closeModal });
                     </div>
 
                     <!-- Demographics (List) -->
-                    <div class="my-4 grid grid-flow-row border border-1 rounded">
+                    <div
+                      class="my-4 grid grid-flow-row border border-1 rounded"
+                    >
                       <label for="demographics">Demographics:</label>
                       <div
                         v-for="(demographic, index) in resources.demographics"
                         :key="index"
-                        
                       >
                         <input
                           type="text"
@@ -186,7 +221,9 @@ defineExpose({ openModal, closeModal });
                     </div>
 
                     <!-- Languages (List) -->
-                    <div class="my-4 grid grid-flow-row border border-1 rounded">
+                    <div
+                      class="my-4 grid grid-flow-row border border-1 rounded"
+                    >
                       <label for="languages">Languages:</label>
                       <div
                         v-for="(language, index) in resources.languages"
@@ -202,7 +239,9 @@ defineExpose({ openModal, closeModal });
                     </div>
 
                     <!-- Locations (List) -->
-                    <div class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded">
+                    <div
+                      class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded"
+                    >
                       <label for="locations">Locations:</label>
                       <div
                         v-for="(location, index) in resources.locations"
@@ -248,7 +287,9 @@ defineExpose({ openModal, closeModal });
                     </div>
 
                     <!-- Phone Numbers (List) -->
-                    <div class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded">
+                    <div
+                      class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded"
+                    >
                       <label for="phoneNumbers">Phone Numbers:</label>
                       <div
                         v-for="(phoneNumber, index) in resources.phoneNumbers"
@@ -261,10 +302,19 @@ defineExpose({ openModal, closeModal });
                           class="border border-2 rounded bg-gray-100 my-1 mx-1"
                         />
                       </div>
+                      <button
+                        type="button"
+                        @click="addPhoneNumber"
+                        class="mt-2 px-4 py-2 bg-blue-100 text-blue-900 rounded hover:bg-blue-200"
+                      >
+                        Add Phone Number
+                      </button>
                     </div>
 
                     <!-- Emails (List) -->
-                    <div class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded">
+                    <div
+                      class="my-4 grid grid-flow-row auto-rows-auto border border-1 rounded"
+                    >
                       <label for="emails">Emails:</label>
                       <div
                         v-for="(email, index) in resources.emails"
@@ -305,66 +355,69 @@ defineExpose({ openModal, closeModal });
     </Dialog>
   </TransitionRoot>
 
-<div>
-  <TransitionRoot appear :show="isOpen" as="template" v-if="mode === 'create'">
-    <Dialog as="div" @close="closeModal()" class="relative z-10">
-      <TransitionChild
-        as="template"
-        enter="duration-300 ease-out"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="duration-200 ease-in"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
-      >
-        <div class="fixed inset-0 bg-black/25" />
-      </TransitionChild>
-
-      <div class="fixed inset-0 overflow-y-auto">
-        <div
-          class="flex min-h-full items-center justify-center p-4 text-center"
+  <div>
+    <TransitionRoot
+      appear
+      :show="isOpen"
+      as="template"
+      v-if="mode === 'create'"
+    >
+      <Dialog as="div" @close="closeModal()" class="relative z-10">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
         >
-          <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0 scale-95"
-            enter-to="opacity-100 scale-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100 scale-100"
-            leave-to="opacity-0 scale-95"
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
           >
-            <DialogPanel
-              class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
             >
-              <DialogTitle
-                as="h3"
-                class="text-lg font-medium leading-6 text-gray-900"
+              <DialogPanel
+                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
               >
-                Payment successful
-              </DialogTitle>
-              <div class="mt-2">
-                <p class="text-sm text-gray-500">
-                  Your payment has been successfully submitted. We’ve sent you
-                  an email with all of the details of your order.
-                </p>
-              </div>
-
-              <div class="mt-4">
-                <button
-                  type="button"
-                  class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                  @click="closeModal"
+                <DialogTitle
+                  as="h3"
+                  class="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Got it, thanks!
-                </button>
-              </div>
-            </DialogPanel>
-          </TransitionChild>
+                  Payment successful
+                </DialogTitle>
+                <div class="mt-2">
+                  <p class="text-sm text-gray-500">
+                    Your payment has been successfully submitted. We’ve sent you
+                    an email with all of the details of your order.
+                  </p>
+                </div>
+
+                <div class="mt-4">
+                  <button
+                    type="button"
+                    class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                    @click="closeModal"
+                  >
+                    Got it, thanks!
+                  </button>
+                </div>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
         </div>
-      </div>
-    </Dialog>
-  </TransitionRoot>
-</div>
-
-
+      </Dialog>
+    </TransitionRoot>
+  </div>
 </template>
