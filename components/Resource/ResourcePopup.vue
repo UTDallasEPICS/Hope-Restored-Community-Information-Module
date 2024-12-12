@@ -178,13 +178,14 @@ async function createResource() {
           },
         }
       );
-     // window.location.reload();
-
+      
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(
           `Failed to create resource: ${response.status} - ${errorText}`
         );
+      } else {
+        window.location.reload();
       }
     } catch (err: any) {
       console.error("Error during resource creation:", err.message);
