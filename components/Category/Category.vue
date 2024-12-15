@@ -12,7 +12,7 @@ const emit = defineEmits(["selectCategory"]);
 
 <template>
   <div
-    class="flex flex-col p-2 justify-between items-center text-center cursor-pointer border-2 border-transparent hover:border-white-neutral min-w-0"
+    class="flex flex-col p-2 justify-between items-center text-center cursor-pointer border-2 border-transparent hover:border-white-neutral min-w-20 hover:flex-auto"
     @click="$emit('selectCategory', title)"
     :class="
       isClicked
@@ -23,12 +23,15 @@ const emit = defineEmits(["selectCategory"]);
     <component
       :is="icon"
       class="flex-1"
-      :style="{ width: '1.5em', height: '1.5em' }"
+      :style="{
+        width: '1.5em',
+        height: '1.5em',
+        flex: '1 1 auto',
+        display: 'flex',
+      }"
     />
 
-    <h3
-      class="flex truncate hover:whitespace-normal hover:overflow-visible hover:text-ellipsis"
-    >
+    <h3 class="overflow-ellipsis line-clamp-1 hover:overflow-visible">
       {{ title }}
     </h3>
   </div>
