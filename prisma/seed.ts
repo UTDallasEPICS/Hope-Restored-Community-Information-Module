@@ -7,7 +7,79 @@ import {
 
 const prisma = new PrismaClient();
 
-const resources: CreateResourceInput[] = [
+async function seed() {
+  const usage = new CreateResourceUseCase();
+
+  let resources = await read_collin_college();
+  for (const resource of resources) {
+    console.log("Seeding resource:", resource.name, resource.phoneNumbers);
+    await usage.execute(resource);
+  }
+
+  console.log("Seeding completed!");
+}
+
+const COLLIN_COLLEGE_PATH =
+  "static/client_files/collin-college/collin_college.csv";
+
+function read_collin_college(): Promise<CreateResourceInput[]> {
+  const fs = require("fs");
+  const csv = require("csv-parser");
+  const resources: CreateResourceInput[] = [];
+  const uniqueNamesSet = new Set<string>();
+  const uniquePhoneNumbersSet = new Set<string>();
+
+  return new Promise((resolve, reject) => {
+    fs.createReadStream(COLLIN_COLLEGE_PATH)
+      .pipe(csv())
+      .on("data", (data: any) => {
+        const name = data["Name"];
+        const phoneNumbers = data["Phone"] ? data["Phone"].split(",") : [];
+
+        // Check if the name and phone numbers are unique
+        // Temporary fix. Need to remove duplicate name in file
+        // For phone, need to make many-to-many relationship in Prisma
+        const isNameUnique = !uniqueNamesSet.has(name);
+        const arePhoneNumbersUnique = phoneNumbers.every(
+          (phone: any) => !uniquePhoneNumbersSet.has(phone)
+        );
+
+        if (isNameUnique && arePhoneNumbersUnique) {
+          const resource = {
+            name: name,
+            description: data["Description"],
+            externalLink: data["Links"] ? data["Links"] : undefined,
+            languages: ["English"],
+            phoneNumbers: phoneNumbers,
+            emails: data["Emails"] ? data["Emails"].split(",") : undefined,
+            groupName: data["Type"] ? data["Type"] : "Others",
+          };
+
+          uniqueNamesSet.add(name);
+          phoneNumbers.forEach((phone: any) =>
+            uniquePhoneNumbersSet.add(phone)
+          );
+          resources.push(resource);
+        }
+      })
+      .on("end", () => {
+        resolve(resources);
+      })
+      .on("error", (error: Error) => {
+        reject(error);
+      });
+  });
+}
+
+seed()
+  .catch((error) => {
+    console.error("Error seeding resources:", error);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
+
+const RESOURCES: CreateResourceInput[] = [
   {
     name: "Food Bank Assistance",
     description: "Provides food to individuals and families in need.",
@@ -191,21 +263,3 @@ const resources: CreateResourceInput[] = [
     groupName: "Health Services",
   },
 ];
-
-async function seed() {
-  const usage = new CreateResourceUseCase();
-
-  for (const resource of resources) {
-    await usage.execute(resource);
-  }
-
-  console.log("Seeding completed!");
-}
-
-seed()
-  .catch((error) => {
-    console.error("Error seeding resources:", error);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });

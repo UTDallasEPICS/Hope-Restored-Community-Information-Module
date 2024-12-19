@@ -35,7 +35,7 @@ const emit = defineEmits(["selectCategory"]);
 
 <template>
   <div
-    class="flex flex-row flex-auto basis-0 text-white-neutral"
+    class="flex flex-row flex-auto text-white-neutral"
     :style="{ fontSize: itemSize }"
     :class="
       wrap ? 'flex-wrap justify-center gap-y-10' : 'flex-nowrap justify-between'

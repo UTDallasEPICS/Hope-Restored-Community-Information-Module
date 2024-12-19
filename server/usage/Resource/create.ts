@@ -89,7 +89,7 @@ export class CreateResourceUseCase {
     if (phoneNumbers) {
       resourceData.phoneNumbers = {
         createMany: {
-          data: phoneNumbers.map((phoneNumber) => ({ phoneNumber })),
+          data: phoneNumbers.map((phoneNumber) => ({ number: phoneNumber })),
         },
       };
     }
@@ -102,7 +102,7 @@ export class CreateResourceUseCase {
       };
     }
 
-    console.log("resourceData", resourceData.emails.create);
+    //console.log("resourceData", resourceData.emails);
 
     const resource = await prisma.resource.create({
       data: resourceData,
