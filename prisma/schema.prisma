@@ -4,8 +4,12 @@ datasource db {
 }
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
+enum Role {
+  ADMIN    // Admin user
+}
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
@@ -13,93 +17,98 @@ model User {
   password  String                        // Password field
   name      String?                       // Optional name field (can be made required by removing `?`)
   role      Role     @default(ADMIN)       // Role can be USER or ADMIN
+
+  @@map("user") // Table name in the database
+}
+
+model Resource {
+  id          Int      @id @default(autoincrement()) // Primary key with auto-increment
+  name        String   @unique
+  description String
+  eligibility String   @default("N/A")// this is the criteria for which a person can be elgible for this resource
+  cost        Float    @default(0)
+  externalLink String?  // A call to action link for the resource 
+  locations Location[] // Backward relation to Location (One-to-many relationship)
+  demographics Demographic[] 
+  phoneNumbers PhoneNumber[]
+  emails      Email[]
+  languages Language[]
+  groupId    Int // Foreign key to Groups
+  group      Group @relation(fields: [groupId], references: [id])
+  archived   Boolean  @default(false) // Default value for archived
+  createdAt  DateTime @default(now()) // Default value for createdAt
+  updatedAt  DateTime @updatedAt      // UpdatedAt field
+  //tags Tags[]
+  @@map("resource") // Table name in the database
 }
 
 model Language {
   id Int              @id @default(autoincrement()) // Primary key with auto-increment
-  name String
-  resourceID Int @unique
-  resource Resources @relation(fields: [resourceID], references: [id])
+  name String         @unique
+  resources Resource[]
+
+  @@map("language") // Table name in the database
 }
 
-model Resources {
-  id          Int      @id @default(autoincrement()) // Primary key with auto-increment
-  name        String
-  description String
-  eligibility Boolean  // Boolean should be capitalized
-  cost        Float    // Prisma uses `Float` for double precision numbers
-  locations Location[] // Backward relation to Location (One-to-many relationship)
-  Demo Demographic[] // Backward relation to Demographic (One-to-many relationship)
-  externalLink ExternalLinks?
-  phoneNumber PhoneNumber?
-  language Language?
-  tags Tags?
-  groups Groups?
+//model Tag {
+//  id Int                @id @default(autoincrement()) // Primary key with auto-increment
+//  name String
+//  resourceId Int @unique
+//  resource Resource[]
+// 
+//  @@map("tag") // Table name in the database
+//}
 
-}
-
-model Tags {
-  id Int                @id @default(autoincrement()) // Primary key with auto-increment
-  name String
-  resourceId Int @unique
-  resource Resources @relation(fields: [resourceId], references: [id])
-}
-
-model Groups {
+model Group {
   id Int              @id @default(autoincrement()) // Primary key with auto-increment
-  name String
-  resourceId Int @unique
-  resource Resources @relation(fields: [resourceId], references: [id])
+  name String         @unique
+  resources Resource[]
+
+  @@map("group") // Table name in the database
 }
 
 model Demographic{
   id Int                @id @default(autoincrement()) // Primary key with auto-increment
-  name String
-  resourceId Int
-  resource Resources @relation(fields: [resourceId], references: [id])
-}
+  name String           @unique
+  resources Resource[]
 
-model ExternalLinks {
-  id Int                  @id @default(autoincrement()) // Primary key with auto-increment
-  name String
-  link String
-  resourceId Int @unique
-  resource   Resources  @relation(fields: [resourceId], references: [id])
+  @@map("demographic") // Table name in the database
 }
 
 model PhoneNumber {
   id Int                    @id @default(autoincrement()) // Primary key with auto-increment
-  number Int
-  type String
-  resourceId Int @unique
-  resource Resources @relation(fields: [resourceId], references: [id])
-  personalId Int @unique
-  personal personal @relation(fields: [personalId], references: [id])
+  number String             @unique
+  name String?              // Optional name of the person associated with the phone number
+  description String?       // Optional description of the phone number
+  resourceId Int
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@map("phone_number") // Table name in the database
 }
 
-model personal {
-  id Int                @id @default(autoincrement()) // Primary key with auto-increment
-  name String
-  description String
-  phoneNumbers PhoneNumber[]
+model Email {
+  id Int                    @id @default(autoincrement()) // Primary key with auto-increment
+  email String              @unique
+  name String?              // Optional name of the person associated with the email
+  description String?       // Optional description of the email
+  resourceId Int
+  resource Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@map("email") // Table name in the database
 }
 
 model Location {
   id           Int       @id @default(autoincrement()) // Primary key
-  addressLine1 String
+  addressLine1 String    @unique
   addressLine2 String
   city         String
   state        String
   postalCode   String    // Changed from PostalLink Int to String for clarity
-  country      String
-  longitude    Float     // Changed from Int to Float
-  latitude     Float     // Changed from Int to Float
+  country      String    @default("USA") // Default value for country
+  longitude    Float?    // Changed from Int to Float
+  latitude     Float?    // Changed from Int to Float
   resourceId   Int       // Foreign key
-  resource     Resources @relation(fields: [resourceId], references: [id])
+  resource     Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
 
-  
-}
-
-enum Role {
-  ADMIN    // Admin user
+  @@map("location") // Table name in the database
 }

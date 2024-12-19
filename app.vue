@@ -1,8 +1,7 @@
 <template>
-  <div>
+  <div class="font-bold">
     <NuxtRouteAnnouncer />
-    <AppHeader/>
-    This is our App
+    
   </div>
   <NuxtPage />
 </template>

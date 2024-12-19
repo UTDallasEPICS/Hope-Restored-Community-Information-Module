@@ -4,21 +4,36 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "build-vue": "vite build --config vite.config.wordpress.ts",
+    "dev-vue": "vite --config vite.config.wordpress.ts ",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "seed": "tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^5.20.0",
+    "@headlessui/vue": "^1.7.23",
+    "@heroicons/vue": "^2.1.5",
+    "@prisma/client": "^5.21.1",
+    "csv-parser": "^3.0.0",
     "nuxt": "^3.13.0",
+    "vite": "^5.4.11",
     "vue": "latest"
   },
-  "devDependencies": { 
+  "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
     "@sidebase/nuxt-auth": "^0.6.7",
-    "prisma": "^5.20.0",
-    "typescript": "^5.6.2",
+    "@types/node": "^22.7.5",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "prisma": "^5.21.1",
+    "tailwindcss": "^3.4.14",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
     "vue-tsc": "^2.1.6"
-
   }
 }
