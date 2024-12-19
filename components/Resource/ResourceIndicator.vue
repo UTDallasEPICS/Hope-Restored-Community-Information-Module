@@ -7,13 +7,16 @@ const searchStore = useSearchStore();
 const categoryStore = useCategoryStore();
 
 const label = computed(() => {
-  if (searchStore.getSearchTerm.value !== "") {
-    return `Browsing resource that ${searchStore.getSearchTerm.value}`;
-  }
+  let label = "Browsing";
   if (categoryStore.getSelectedCategory.value) {
-    return `Browsing ${categoryStore.getSelectedCategory.value} resource`;
+    label += ` ${categoryStore.getSelectedCategory.value}`;
+  } else {
+    label += " all resources";
   }
-  return "Browsing all resources";
+  if (searchStore.getSearchTerm.value) {
+    label += ` that "${searchStore.getSearchTerm.value}"`;
+  }
+  return label;
 });
 </script>
 
