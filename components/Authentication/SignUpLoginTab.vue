@@ -24,31 +24,19 @@
     </div>
   </template>
   
-  <script lang="ts">
-  import { defineComponent, ref } from 'vue';
-  
-  export default defineComponent({
-    name: 'SignUpLoginTab',
-    setup() {
-      const username = ref('');
-      const password = ref('');
-  
-      const handleSubmit = () => {
-        // Handle sign up/login logic here
-        console.log('Username:', username.value);
-        console.log('Password:', password.value);
-      };
-  
-      return {
-        username,
-        password,
-        handleSubmit,
-      };
-    },
-  });
-  </script>
-  
-  <style scoped>
-  /* Add any additional styles here */
-  </style>
+<script setup lang="ts">
+import {ref} from 'vue'
+const username = ref('');
+const password = ref('');
+
+const handleSubmit = () => {
+    // Handle sign up/login logic here
+    console.log('Username:', username.value);
+    console.log('Password:', password.value);
+};
+</script>
+
+<style scoped>
+/* Add any additional styles here */
+</style>
     

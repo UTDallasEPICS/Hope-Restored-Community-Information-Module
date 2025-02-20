@@ -37,13 +37,13 @@ watch(
       class="border p-2 rounded-md flex-1"
     />
     <!--TODO: Add location filtering-->
-    <!-- <input
+    <input
       v-model="location"
       id="location"
       type="text"
       placeholder="Enter your zip code"
       class="border p-2 rounded-md ml-2 flex-1"
-    /> -->
+    /> 
     <button type="submit" class="p-2 ml-2 text-white-neutral bg-hrm-green">
       <MagnifyingGlassCircleIcon class="w-6 h-6" />
     </button>

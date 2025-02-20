@@ -2,13 +2,12 @@
 import { TransitionRoot } from "@headlessui/vue";
 import { useLoadingStore } from "./loadingStore";
 
-const loadingStore = useLoadingStore();
-const globalLoading = loadingStore.getGlobalLoading;
+const {globalLoading} = useLoadingStore()
 </script>
 
 <template>
   <TransitionRoot
-    :show="globalLoading"
+    :show="false"
     enter="transition-opacity duration-500"
     enter-from="opacity-0"
     enter-to="opacity-100"

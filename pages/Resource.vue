@@ -8,7 +8,6 @@ import Loader from "../components/Loader/Loader.vue";
 
 <template>
   <div id="scroll-to-top-anchor">
-    <Loader />
     <PublicLandingModal />
     <NavBar />
     <div class="flex flex-row flex-auto">
