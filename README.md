@@ -121,7 +121,7 @@ npm install
 docker compose up
 ```
 
-4. Run the following command to set up prisma
+4. Run the following command to set up prisma 
 
 ```bash
 npx prisma migrate dev
