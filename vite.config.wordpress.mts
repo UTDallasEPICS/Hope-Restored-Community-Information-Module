@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import tailwindcss from "tailwindcss";
 import autoprefixer from "autoprefixer";
-import { resolve } from "path";
+import { resolve } from "node:path";
 
 export default defineConfig({
   resolve: { alias: [{ find: "~", replacement: resolve(__dirname, ".") }] },

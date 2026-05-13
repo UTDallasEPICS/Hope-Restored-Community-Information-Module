@@ -3,7 +3,7 @@ import { type ResourceDB } from "~/server/db/constants";
 async function fetchResourcesByID(id: number): Promise<ResourceDB> {
   try {
     const response: Response = await fetch(
-      `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resource/get/${id}`,
+      `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resources/${id}`,
       {
         method: "GET",
       }
@@ -34,7 +34,7 @@ async function fetchResources(
       sortOrder,
     });
     const response: Response = await fetch(
-      `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resource/get/all?${query}`,
+      `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resources?${query}`,
       {
         method: "GET",
       }

@@ -4,7 +4,7 @@ type CategoryDB = Prisma.GroupGetPayload<{}>;
 async function fetchCategories(): Promise<CategoryDB[]> {
   try {
     const response: Response = await fetch(
-      `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/group/get/all`,
+      `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/groups`,
       {
         method: "GET",
       }

@@ -1,5 +1,14 @@
 import { Prisma } from "@prisma/client";
 
+export function sanitizeDisplayText(text: string): string {
+  return text
+    .normalize("NFC")
+    .replace(/\uFFFD+/g, " – ")
+    .replace(/\s+–\s+/g, " – ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 type LocationDB = Prisma.LocationGetPayload<{}>;
 export function locationToString(location: LocationDB): string {
   let locationString = location.addressLine1;

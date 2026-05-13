@@ -1,7 +1,7 @@
 async function fetchLanguages(): Promise<string[]> {
   try {
     const response: Response = await fetch(
-      `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/language/get/all`,
+      `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/languages`,
       {
         method: "GET",
       }

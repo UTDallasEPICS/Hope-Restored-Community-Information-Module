@@ -8,6 +8,8 @@
 --     paradedb.field('name', tokenizer => paradedb.tokenizer('default', stemmer => 'English'))
 -- ); <--- OLD PARADEDB SYNTAX
 
+-- DROP INDEX search_idx;
+
 CREATE INDEX search_idx ON resource
 USING bm25 (id, description, name)
 WITH (

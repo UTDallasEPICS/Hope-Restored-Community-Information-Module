@@ -6,6 +6,7 @@ import {
   locationToString,
   phoneNumberToString,
   emailToString,
+  sanitizeDisplayText,
 } from "~/utils/stringAssembler";
 import { useFilterStore, type FilterGroup } from "../Filter/filterStore";
 
@@ -128,8 +129,8 @@ function constructFilters(filterGroups: FilterGroup[]) {
 function toResourceProps(resource: ResourceDB): ResourceProps {
   return {
     id: resource.id,
-    title: resource.name,
-    description: resource.description,
+    title: sanitizeDisplayText(resource.name),
+    description: sanitizeDisplayText(resource.description),
     link: resource.externalLink ? resource.externalLink : "",
     demographics: resource.demographics.map((demographic) => demographic.name),
     languages: resource.languages.map((language) => language.name),

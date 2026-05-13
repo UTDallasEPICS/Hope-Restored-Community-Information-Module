@@ -39,7 +39,7 @@
   import { useFetch } from '@vueuse/core';
   import ResourceDeck from '../Resource/ResourceDeck.vue';
 
-  const { data: resource, error } = await useFetch('/api/resource/get/retrieveAll');
+  const { data: resource, error } = await useFetch('/api/resources');
 
   /*
   export default defineComponent({

@@ -124,7 +124,7 @@ docker compose up
 4. Run the following command to set up prisma 
 
 ```bash
-npx prisma migrate dev
+npx prisma migrate reset
 ```
 
 Tip: You can use the Prisma Studio to view and edit the data in the database. Run the following command to start the Prisma Studio:

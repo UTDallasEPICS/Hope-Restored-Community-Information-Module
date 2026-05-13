@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ResourceService from "./request";
 import { type ResourceDB } from "../../server/db/constants";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import {
   TransitionRoot,
   TransitionChild,
@@ -9,7 +9,6 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/vue";
-import { watch } from "vue";
 const props = defineProps({
   id: Number,
   mode: String,
@@ -115,7 +114,7 @@ async function submit() {
 
       // Send PUT Request
       const response = await fetch(
-        `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resource/update/${
+        `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resources/${
           props.id
         }`,
         {
@@ -168,7 +167,7 @@ async function createResource() {
       };
       console.log(payload);
       const response = await fetch(
-        `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resource/create`,
+        `${import.meta.env.VITE_NUXT_ENV_API_URL}/api/resources`,
         {
           // ignore the error under .env it works fine regardless
           method: "POST",

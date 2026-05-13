@@ -27,7 +27,7 @@ export class SearchManyResourceUseCase {
         FROM resource
         ${
           search
-            ? Prisma.sql`WHERE description @@@ ${search} OR name @@@ ${search}`
+            ? Prisma.sql`WHERE description ILIKE ${"%" + search + "%"} OR name ILIKE ${"%" + search + "%"}`
             : Prisma.empty
         }
         ORDER BY ${
