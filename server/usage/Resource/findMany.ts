@@ -8,6 +8,7 @@ const prisma = new PrismaClient({
 export type ResourceFilterInput = {
   search?: string;
   groupName?: string;
+  zipCode?: string;
   demographics?: string[];
   languages?: string[];
   eligibility?: string[];
@@ -92,6 +93,15 @@ export function constructFilterClause(
   const whereClause = {
     archived: false,
     group: filters.groupName ? { name: filters.groupName } : undefined,
+    locations: filters.zipCode
+      ? {
+          some: {
+            postalCode: {
+              startsWith: filters.zipCode.trim(),
+            },
+          },
+        }
+      : undefined,
     demographics: filters.demographics
       ? { some: { name: { in: filters.demographics } } }
       : undefined,
@@ -105,7 +115,6 @@ export function constructFilterClause(
       return undefined;
     })(),
     id: searchIds ? { in: searchIds } : undefined,
-    // TODO: Add support for filtering by city, state, and zip
     // TODO: Add support for filtering by nearby locations
   };
   return whereClause;

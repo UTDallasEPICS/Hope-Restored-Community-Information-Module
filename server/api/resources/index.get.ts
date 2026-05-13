@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
   const filters: ResourceFilterInput = {
     search: query.search as string,
     groupName: query.groupName as string,
+    zipCode: query.zipCode as string,
     demographics: query.demographics
       ? (query.demographics as string).split(",")
       : undefined,

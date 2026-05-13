@@ -38,10 +38,13 @@ export function useResourceStore() {
     currentPage.value = 1;
   }
 
-  async function loadResourcesBySearchTerm(searchTerm: string) {
+  async function loadResourcesBySearchTerm(
+    searchTerm: string,
+    zipCode = ""
+  ) {
     let filters: Record<string, string[] | string> = {};
     filters = constructFilters(filterStore.getFilterGroups.value);
-    filters = { ...filters, search: searchTerm };
+    filters = { ...filters, search: searchTerm, zipCode };
     currentFilters.value = filters;
     loadResources();
     currentPage.value = 1;

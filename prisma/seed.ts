@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 async function seed() {
   const usage = new CreateResourceUseCase();
 
-  let resources = await read_collin_college();
+  let resources = RESOURCES;
   for (const resource of resources) {
     console.log("Seeding resource:", resource.name, resource.phoneNumbers);
     await usage.execute(resource);
@@ -70,14 +70,6 @@ function read_collin_college(): Promise<CreateResourceInput[]> {
       });
   });
 }
-
-seed()
-  .catch((error) => {
-    console.error("Error seeding resources:", error);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
 
 const RESOURCES: CreateResourceInput[] = [
   {
@@ -263,3 +255,11 @@ const RESOURCES: CreateResourceInput[] = [
     groupName: "Health Services",
   },
 ];
+
+seed()
+  .catch((error) => {
+    console.error("Error seeding resources:", error);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

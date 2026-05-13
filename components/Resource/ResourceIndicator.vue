@@ -16,6 +16,9 @@ const label = computed(() => {
   if (searchStore.getSearchTerm.value) {
     label += ` that "${searchStore.getSearchTerm.value}"`;
   }
+  if (searchStore.getZipCode.value) {
+    label += ` near zip code ${searchStore.getZipCode.value}`;
+  }
   return label;
 });
 </script>

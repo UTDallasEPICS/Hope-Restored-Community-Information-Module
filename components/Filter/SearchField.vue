@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { MagnifyingGlassCircleIcon } from "@heroicons/vue/24/solid";
-import { defineEmits, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { useResourceStore } from "../Resource/resourceStore";
 import { useCategoryStore } from "../Category/categoryStore";
 import { useSearchStore } from "./searchStore";
@@ -10,7 +10,8 @@ const resourceStore = useResourceStore();
 const searchResources = async () => {
   emit("searchResources");
   searchStore.setSearchTerm(search.value);
-  resourceStore.loadResourcesBySearchTerm(search.value);
+  searchStore.setZipCode(location.value);
+  resourceStore.loadResourcesBySearchTerm(search.value, location.value);
   categoryStore.clearSelectedCategory();
 };
 const emit = defineEmits(["searchResources"]);
@@ -25,6 +26,13 @@ watch(
     search.value = value;
   }
 );
+
+watch(
+  () => searchStore.getZipCode.value,
+  (value) => {
+    location.value = value;
+  }
+);
 </script>
 
 <template>
@@ -36,14 +44,14 @@ watch(
       placeholder="What are you looking for today?"
       class="border p-2 rounded-md flex-1"
     />
-    <!--TODO: Add location filtering-->
-    <!-- <input
+    <input
       v-model="location"
       id="location"
       type="text"
       placeholder="Enter your zip code"
+      inputmode="numeric"
       class="border p-2 rounded-md ml-2 flex-1"
-    /> -->
+    />
     <button type="submit" class="p-2 ml-2 text-white-neutral bg-hrm-green">
       <MagnifyingGlassCircleIcon class="w-6 h-6" />
     </button>
